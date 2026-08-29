@@ -11,7 +11,6 @@
      - keywords = keywords for Google Search Console (comma-separated)
      Just change the text inside these, don't touch the tags.
 ============================================================ -->
- <meta name="monetag" content="149b16cfcfc429718a77245dfe80fcbf">
  <meta name="google-site-verification" content="hKETC4pqwc7Yan2C7hY52jXP9SyxKKhThzNCoVC5QoI" />
  <title>BDYwish | No Coding | Free of Cost</title>
  <meta name="description" content="BDYwish — create personalized birthday wishes, anniversary surprises, love proposals & festival greeting templates online, 100% free. No coding needed, just upload photos & message and get a shareable link in minutes.">
@@ -915,9 +914,11 @@
     padding: 7px 18px;
     border-radius: 20px;
   }
+
   /* ============================================================
-     BDYwish REVEAL LOADER
-     Lightweight branded loader; initial page assets continue in background.
+     SIMPLE HEART LOADER
+     No logo card / no separate mini-page. One lightweight loader is
+     reused everywhere a real preparation step is happening.
   ============================================================ */
   .site-prep-loader {
     position: fixed;
@@ -926,63 +927,52 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff7fb;
+    background: rgba(0,0,0,.92);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     opacity: 1;
     visibility: visible;
-    transition: opacity .28s ease, visibility .28s ease;
+    transition: opacity .22s ease, visibility .22s ease;
   }
   .site-prep-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-  .prep-brand-loader {
+  .prep-heart-loader {
+    width: 76px;
+    height: 76px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    min-width: 230px;
+    justify-content: center;
   }
-  .prep-brand-name {
-    display: flex;
-    gap: 1px;
-    font-family: Inter, system-ui, sans-serif;
-    font-size: 38px;
-    font-weight: 800;
-    letter-spacing: -.055em;
-    color: #c21868;
+  .prep-heart-loader svg {
+    width: 68px;
+    height: 68px;
+    overflow: visible;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,1)) drop-shadow(0 0 14px rgba(255,255,255,.95)) drop-shadow(0 0 28px rgba(255,255,255,.55));
   }
-  .prep-brand-name span {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(16px) scale(.92);
-    animation: bdyReveal .48s cubic-bezier(.2,.8,.2,1) forwards;
+  .prep-heart-loader path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 210;
+    stroke-dashoffset: 210;
+    animation: prepHeartDraw 1.65s ease-in-out infinite;
   }
-  .prep-brand-name span:nth-child(1){animation-delay:.03s}
-  .prep-brand-name span:nth-child(2){animation-delay:.07s}
-  .prep-brand-name span:nth-child(3){animation-delay:.11s}
-  .prep-brand-name span:nth-child(4){animation-delay:.15s}
-  .prep-brand-name span:nth-child(5){animation-delay:.19s}
-  .prep-brand-name span:nth-child(6){animation-delay:.23s}
-  .prep-brand-name span:nth-child(7){animation-delay:.27s}
-  @keyframes bdyReveal {
-    0% { opacity: 0; transform: translateY(16px) scale(.92); }
-    70% { opacity: 1; transform: translateY(-2px) scale(1.02); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+  @keyframes prepHeartDraw {
+    0% { stroke-dashoffset: 210; opacity: .72; transform: scale(.88); }
+    45% { opacity: 1; }
+    70% { stroke-dashoffset: 0; transform: scale(1.03); }
+    100% { stroke-dashoffset: -210; opacity: .72; transform: scale(.88); }
   }
-  .prep-brand-line {
-    width: 0;
-    height: 3px;
-    border-radius: 999px;
-    background: #c21868;
-    animation: bdyLine .55s ease .45s forwards;
-  }
-  @keyframes bdyLine { to { width: 105px; } }
   .prep-loader-message {
     position: absolute;
-    top: calc(50% + 70px);
+    top: calc(50% + 52px);
     width: 100%;
     text-align: center;
-    padding: 0 24px;
-    box-sizing: border-box;
-    color: #8a7180;
-    font: 500 13px/1.4 Inter, system-ui, sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,.9);
+    text-shadow: 0 0 8px rgba(255,255,255,.55);
+    pointer-events: none;
   }
 
   /* Back-button confirmation while a real loading/preparation task is active. */
@@ -1424,18 +1414,31 @@
   .detail-metric.rating { color:#C58A0A; }
   .wishlist-btn { background:transparent; border:1px solid rgba(225,79,134,.25); color:var(--accent-pink); border-radius:999px; padding:8px 12px; cursor:pointer; font-weight:700; }
   .wishlist-btn.active { background:rgba(225,79,134,.1); }
-  .settings-profile { display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg-main); border-radius:14px; margin:12px 0; }
-  .settings-profile img { width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-pink); }
-  .settings-profile-name { font-weight:800; font-size:16px; }
-  .settings-profile-email { color:var(--text-muted); font-size:11px; margin-top:2px; word-break:break-word; }
+  .settings-profile { display:block; padding:18px 14px 14px; background:var(--card-bg); border:1px solid rgba(225,79,134,.10); border-radius:20px; margin:12px 0 10px; text-align:center; }
+  .settings-profile-top { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .settings-profile-avatar-wrap { position:relative; width:88px; height:88px; margin:0 auto 2px; }
+  .settings-profile img { width:88px; height:88px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow:0 0 0 2px rgba(225,79,134,.25); background:var(--bg-main); display:block; }
+  .settings-profile-name-row { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
+  .settings-profile-name { font-weight:800; font-size:20px; line-height:1.15; }
+  .settings-edit-btn { border:0; background:rgba(225,79,134,.10); color:var(--accent-pink); border-radius:999px; padding:7px 11px; cursor:pointer; font-weight:800; font-size:12px; }
+  .settings-profile-email { color:var(--text-muted); font-size:11px; margin-top:4px; word-break:break-word; }
+  .settings-badges { display:flex; justify-content:center; gap:7px; flex-wrap:wrap; margin-top:10px; }
+  .settings-badge { display:inline-flex; align-items:center; gap:4px; padding:6px 9px; border-radius:999px; font-size:11px; font-weight:800; background:rgba(66,133,244,.10); color:#4285F4; }
+  .settings-badge.free { background:rgba(225,79,134,.10); color:var(--accent-pink); }
+  .settings-stats { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid rgba(255,255,255,.08); margin:14px -14px -14px; padding:12px 8px; }
+  .settings-stat { text-align:center; min-width:0; }
+  .settings-stat + .settings-stat { border-left:1px solid rgba(255,255,255,.08); }
+  .settings-stat-value { font-size:20px; font-weight:900; line-height:1; }
+  .settings-stat-label { margin-top:5px; font-size:9px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.45px; }
   .settings-section-title { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.7px; margin:16px 0 6px; }
   .settings-data-list { display:flex; flex-direction:column; gap:7px; max-height:220px; overflow:auto; }
   .settings-data-item { background:var(--bg-main); padding:10px 12px; border-radius:10px; font-size:12px; }
   .settings-data-item strong { display:block; margin-bottom:2px; }
   .settings-data-item span { color:var(--text-muted); }
-  .settings-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
-  .settings-tab { padding:9px; border-radius:10px; border:1px solid rgba(225,79,134,.14); background:transparent; cursor:pointer; font-weight:700; }
+  .settings-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:10px 0; }
+  .settings-tab { padding:9px 4px; border-radius:10px; border:1px solid rgba(225,79,134,.14); background:transparent; cursor:pointer; font-weight:700; font-size:10px; color:var(--text-light); }
   .settings-tab.active { background:rgba(225,79,134,.1); color:var(--accent-pink); }
+  .settings-account-panel { background:var(--bg-main); border-radius:12px; padding:12px; }
 
   /* Desktop View Extension */
   @media (min-width: 768px) {
@@ -1450,13 +1453,13 @@
 </style>
 </head>
 <body>
-  <!-- BDYwish branded reveal loader -->
+
+  <!-- SIMPLE HEART LOADER — used for initial image preparation, preview, uploads and link generation -->
   <div id="sitePrepLoader" class="site-prep-loader" aria-live="polite" aria-busy="true">
-    <div class="prep-brand-loader" aria-hidden="true">
-      <div class="prep-brand-name">
-        <span>B</span><span>D</span><span>Y</span><span>w</span><span>i</span><span>s</span><span>h</span>
-      </div>
-      <div class="prep-brand-line"></div>
+    <div class="prep-heart-loader" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <path d="M50 82 C45 76 18 59 18 38 C18 24 29 16 40 16 C47 16 52 20 50 27 C48 20 53 16 60 16 C71 16 82 24 82 38 C82 59 55 76 50 82 Z"/>
+      </svg>
     </div>
     <div id="prepLoaderMessage" class="prep-loader-message" aria-live="polite"></div>
   </div>
@@ -1489,7 +1492,7 @@
     <div id="navCoinChip" class="coin-chip" onclick="openCoinsModal()">🪙 <span id="navCoinBalance">0</span></div>
     <button class="login-btn" id="navLoginBtn" onclick="openLogin()">Login</button>
 <div id="navUserChip" style="display:none; align-items:center; gap:6px; cursor:pointer;" onclick="openSettings()">
-  <img id="navUserPhoto" src="" alt="" style="width:24px; height:24px; border-radius:50%; object-fit:cover; border:1px solid var(--accent-pink);">
+  <img id="navUserPhoto" src="" alt="Profile" referrerpolicy="no-referrer" style="width:24px; height:24px; border-radius:50%; object-fit:cover; border:1px solid var(--accent-pink); background:var(--bg-main);">
   <span id="navUserName" style="display:none;"></span>
 </div>
     </div>
@@ -1777,7 +1780,7 @@
           <div class="phone-notch"></div>
           <div class="phone-screen">
             <span class="live-badge">LIVE</span>
-            <iframe id="livePreviewFrame" class="phone-iframe" src="" loading="lazy" title="Live template preview"></iframe>
+            <iframe id="livePreviewFrame" class="phone-iframe" src="" loading="eager" title="Live template preview"></iframe>
             <div id="livePreviewLoading" class="preview-loading-overlay hidden" aria-hidden="true">
               <div class="preview-spinner" aria-label="Loading preview"></div>
             </div>
@@ -1913,22 +1916,40 @@
     </div>
   </div>
 
-  <!-- Settings Modal -->
+  <!-- Settings / Profile Modal -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-      <h3>My Account</h3>
+      <h3 style="margin-bottom:8px;">My Profile</h3>
       <div class="settings-profile">
-        <img id="settingsUserPhoto" src="" alt="Profile">
-        <div>
-          <div class="settings-profile-name" id="settingsUserName">User</div>
+        <div class="settings-profile-top">
+          <div class="settings-profile-avatar-wrap">
+            <img id="settingsUserPhoto" src="" alt="Profile photo" referrerpolicy="no-referrer">
+          </div>
+          <div class="settings-profile-name-row">
+            <div class="settings-profile-name" id="settingsUserName">User</div>
+            <button class="settings-edit-btn" type="button" onclick="editProfileName()">Edit</button>
+          </div>
           <div class="settings-profile-email" id="settingsUserEmail"></div>
+          <div class="settings-badges">
+            <span class="settings-badge">✓ Google account</span>
+            <span class="settings-badge free">🎁 Free access</span>
+          </div>
+        </div>
+        <div class="settings-stats">
+          <div class="settings-stat"><div class="settings-stat-value" id="profileOrdersCount">0</div><div class="settings-stat-label">Orders</div></div>
+          <div class="settings-stat"><div class="settings-stat-value" id="profileWishlistCount">0</div><div class="settings-stat-label">Wishlist</div></div>
+          <div class="settings-stat"><div class="settings-stat-value" id="profileCoinsCount">0</div><div class="settings-stat-label">Coins</div></div>
+          <div class="settings-stat"><div class="settings-stat-value" id="profileReferralsCount">0</div><div class="settings-stat-label">Referrals</div></div>
         </div>
       </div>
 
       <div class="settings-tabs">
         <button class="settings-tab active" id="settingsTabOrders" onclick="showAccountTab('orders')">🧾 Orders</button>
         <button class="settings-tab" id="settingsTabWishlist" onclick="showAccountTab('wishlist')">♡ Wishlist</button>
+        <button class="settings-tab" id="settingsTabRefer" onclick="showAccountTab('refer')">🎁 Refer</button>
+        <button class="settings-tab" id="settingsTabSettings" onclick="showAccountTab('settings')">⚙ Settings</button>
       </div>
+
       <div id="accountOrdersPanel">
         <div class="settings-section-title">My orders</div>
         <div class="settings-data-list" id="settingsOrdersList"><div class="empty-note">Loading...</div></div>
@@ -1937,12 +1958,21 @@
         <div class="settings-section-title">Saved templates</div>
         <div class="settings-data-list" id="settingsWishlistList"><div class="empty-note">Loading...</div></div>
       </div>
-
-      <div class="settings-list">
-        <div class="settings-list-item" style="color:var(--accent-pink);"> 
-          <span onclick="confirmLogout()" style="cursor:pointer;">🚪 Log Out</span><span>›</span>
+      <div id="accountReferPanel" style="display:none;">
+        <div class="settings-account-panel">
+          <strong>Refer &amp; Earn</strong>
+          <p style="color:var(--text-muted); font-size:12px; margin:6px 0 10px;">Share your referral link and earn coins when a new user signs up.</p>
+          <button class="coins-action-btn" style="width:100%;" onclick="closeSettings(); openCoinsModal();">Open Refer &amp; Earn</button>
         </div>
       </div>
+      <div id="accountSettingsPanel" style="display:none;">
+        <div class="settings-account-panel">
+          <div class="settings-section-title" style="margin-top:0;">Account</div>
+          <button class="settings-list-item" style="width:100%; border:0; cursor:pointer; color:var(--text-light);" onclick="editProfileName()"><span>✏️ Edit display name</span><span>›</span></button>
+          <button class="settings-list-item" style="width:100%; border:0; cursor:pointer; color:var(--accent-pink);" onclick="confirmLogout()"><span>🚪 Log out</span><span>›</span></button>
+        </div>
+      </div>
+
       <button class="modal-close" onclick="closeSettings()">Close</button>
     </div>
   </div>
@@ -1979,14 +2009,6 @@
           <button class="coins-action-btn" onclick="shareReferLink()">Share</button>
         </div>
 
-        <div class="coins-action-row">
-          <div class="coins-action-copy">
-            <strong>▶️ Watch an ad</strong>
-            <span><b>1 coin</b> per completed ad · Daily limit: <b id="adDailyLimitText">5</b></span>
-          </div>
-          <button class="coins-action-btn" onclick="startWatchAd()" id="watchAdBtn">Watch</button>
-        </div>
-
         <div class="coins-action-row coins-spin-row">
           <div class="coins-action-copy">
             <strong>🎡 Spin &amp; Win</strong>
@@ -2007,16 +2029,8 @@
       </div>
 
       <p class="status-text" id="referStatusText"></p>
-      <p class="status-text" id="adStatusText"></p>
       <button class="modal-close" onclick="closeCoinsModal()">Close</button>
     </div>
-  </div>
-
-  <!-- Fullscreen "ad" placeholder shown while watching an ad for a coin -->
-  <div class="ad-overlay" id="adOverlay">
-    <div class="ad-box">📺 Ad Playing…</div>
-    <div class="ad-timer" id="adTimerText">15</div>
-    <p style="color:var(--text-muted); font-size:12px;">You'll get the coin after the ad ends.</p>
   </div>
 
   <!-- QR code generator — MIT-licensed "qrcode-generator" by Kazuhiko Arase,
@@ -3855,7 +3869,7 @@ var qrcode = function() {
         const badgeText = kind === 'free' ? 'FREE' : (kind === 'premium' ? 'PREMIUM' : (kind === 'cards' ? 'CARDS' : 'PAID'));
 
         card.innerHTML = `
-          <div class="card-image-box">${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy" decoding="async">` : (item.emoji || '🎁')}</div>
+          <div class="card-image-box">${item.image ? `<img src="${item.image}" alt="${item.name}">` : (item.emoji || '🎁')}</div>
           <div class="card-info">
             <div class="badge-row">
               <span class="badge ${badgeClass}">${badgeText}</span>
@@ -4124,7 +4138,7 @@ var qrcode = function() {
         const badgeText = kind === 'free' ? 'FREE' : (kind === 'premium' ? 'PREMIUM' : (kind === 'cards' ? 'CARDS' : 'PAID'));
 
         card.innerHTML = `
-          <div class="card-image-box">${item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy" decoding="async">` : (item.emoji || '🎁')}</div>
+          <div class="card-image-box">${item.image ? `<img src="${item.image}" alt="${item.name}">` : (item.emoji || '🎁')}</div>
           <div class="card-info">
             <div class="badge-row">
               <span class="badge ${badgeClass}">${badgeText}</span>
@@ -4162,7 +4176,7 @@ var qrcode = function() {
       updateLikeButton();
       refreshTemplateStats(item);
       const heroEl = document.getElementById('detailHero');
-      heroEl.innerHTML = item.image ? `<img src="${item.image}" alt="${item.name}" loading="lazy" decoding="async">` : (item.emoji || '🎁');
+      heroEl.innerHTML = item.image ? `<img src="${item.image}" alt="${item.name}">` : (item.emoji || '🎁');
       document.getElementById('detailName').textContent = item.name;
       document.getElementById('detailDesc').textContent = item.desc || '';
       const detailMetrics = document.getElementById('detailMetrics');
@@ -5438,6 +5452,8 @@ var qrcode = function() {
           const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
           return tb - ta;
         });
+        const orderStat = document.getElementById('profileOrdersCount');
+        if (orderStat) orderStat.textContent = rows.length;
         if (!rows.length) { list.innerHTML = '<div class="empty-note">No orders yet.</div>'; return; }
         list.innerHTML = rows.map(d => {
           const time = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
@@ -5457,15 +5473,19 @@ var qrcode = function() {
     }
 
     function showAccountTab(tab) {
-      const orders = document.getElementById('accountOrdersPanel');
-      const wish = document.getElementById('accountWishlistPanel');
-      const ot = document.getElementById('settingsTabOrders');
-      const wt = document.getElementById('settingsTabWishlist');
-      const isOrders = tab === 'orders';
-      orders.style.display = isOrders ? 'block' : 'none';
-      wish.style.display = isOrders ? 'none' : 'block';
-      ot.classList.toggle('active', isOrders); wt.classList.toggle('active', !isOrders);
-      if (!isOrders) loadAccountWishlist();
+      const panels = {
+        orders: document.getElementById('accountOrdersPanel'),
+        wishlist: document.getElementById('accountWishlistPanel'),
+        refer: document.getElementById('accountReferPanel'),
+        settings: document.getElementById('accountSettingsPanel')
+      };
+      Object.entries(panels).forEach(([key, el]) => { if (el) el.style.display = key === tab ? 'block' : 'none'; });
+      ['orders','wishlist','refer','settings'].forEach(key => {
+        const btn = document.getElementById('settingsTab' + key.charAt(0).toUpperCase() + key.slice(1));
+        if (btn) btn.classList.toggle('active', key === tab);
+      });
+      if (tab === 'wishlist') loadAccountWishlist();
+      if (tab === 'orders') loadAccountOrders();
     }
 
     function escapeHtml(v) {
@@ -5474,20 +5494,73 @@ var qrcode = function() {
 
     // ---------- SETTINGS MODAL ----------
 
-    function openSettings() {
+    function makeAvatarFallback(name) {
+      const initial = String(name || 'U').trim().charAt(0).toUpperCase() || 'U';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" rx="64" fill="#f4dce8"/><text x="64" y="78" text-anchor="middle" font-family="Arial,sans-serif" font-size="58" font-weight="700" fill="#c22b72">${initial}</text></svg>`;
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function setProfileImage(imgEl, photoUrl, name) {
+      if (!imgEl) return;
+      const fallback = makeAvatarFallback(name);
+      imgEl.onerror = () => { imgEl.onerror = null; imgEl.src = fallback; };
+      imgEl.src = photoUrl || fallback;
+    }
+
+    async function refreshProfileStats() {
+      if (!window.currentUserUid) return;
+      try {
+        const snap = await getDoc(doc(db, 'users', window.currentUserUid));
+        const d = snap.exists() ? (snap.data() || {}) : {};
+        const wishlistCount = Array.isArray(d.wishlist) ? d.wishlist.length : 0;
+        document.getElementById('profileWishlistCount').textContent = wishlistCount;
+        document.getElementById('profileCoinsCount').textContent = Number(d.coins || 0);
+        document.getElementById('profileReferralsCount').textContent = Number(d.referralCount || (Array.isArray(d.referrals) ? d.referrals.length : 0));
+      } catch (e) { console.warn('Profile stats load failed:', e); }
+    }
+
+    async function editProfileName() {
+      const u = auth.currentUser;
+      if (!u) return;
+      const current = u.displayName || '';
+      const next = prompt('Enter your display name:', current);
+      if (next === null) return;
+      const name = next.trim().slice(0, 60);
+      if (!name) return;
+      try {
+        await updateProfile(u, { displayName: name });
+        await setDoc(doc(db, 'users', u.uid), { name, photoURL: u.photoURL || '' }, { merge: true });
+        document.getElementById('settingsUserName').textContent = name;
+        document.getElementById('navUserName').textContent = name.split(' ')[0] || 'User';
+        setProfileImage(document.getElementById('settingsUserPhoto'), u.photoURL, name);
+      } catch (e) {
+        console.error(e);
+        alert('Could not update your name. Please try again.');
+      }
+    }
+
+    async function openSettings() {
       if (!window.isUserLoggedIn) { openLogin(); return; }
       const modal = document.getElementById('settingsModal');
       modal.classList.add('active');
       pushOverlay('settings', hideSettings);
       const u = auth.currentUser;
       if (u) {
-        document.getElementById('settingsUserPhoto').src = u.photoURL || '';
-        document.getElementById('settingsUserName').textContent = u.displayName || 'User';
-        document.getElementById('settingsUserEmail').textContent = u.email || '';
+        let profileData = {};
+        try {
+          const snap = await getDoc(doc(db, 'users', u.uid));
+          profileData = snap.exists() ? (snap.data() || {}) : {};
+        } catch (e) { console.warn('Profile data load failed:', e); }
+        const name = u.displayName || profileData.name || 'User';
+        const photo = u.photoURL || profileData.photoURL || '';
+        setProfileImage(document.getElementById('settingsUserPhoto'), photo, name);
+        document.getElementById('settingsUserName').textContent = name;
+        document.getElementById('settingsUserEmail').textContent = u.email || profileData.email || '';
       }
       showAccountTab('orders');
-      loadAccountOrders();
-      loadCurrentUserWishlist().then(loadAccountWishlist);
+      await loadCurrentUserWishlist();
+      await loadAccountOrders();
+      await refreshProfileStats();
     }
     function hideSettings() {
       document.getElementById('settingsModal').classList.remove('active');
@@ -5601,7 +5674,7 @@ function confirmLogout() {
       const urls = collectSiteImageUrls();
       if (!urls.length) { hidePrepLoader(); return; }
       let done = 0;
-      // Background preload only: do not block first paint with the loader.
+      setPrepLoader('');
       await Promise.allSettled(urls.map(url => new Promise(resolve => {
         if (prepStopRequested) { resolve(); return; }
         const img = new Image();
@@ -5619,14 +5692,6 @@ function confirmLogout() {
       })));
       if (!prepStopRequested) hidePrepLoader();
     }
-
-    // Short branded reveal; heavy images continue loading in the background.
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        const loader = document.getElementById('sitePrepLoader');
-        if (loader && prepTaskCount === 0) hidePrepLoader();
-      }, 720);
-    });
 
     function beginPrepTask(message) {
       prepTaskCount++;
@@ -5663,7 +5728,7 @@ function confirmLogout() {
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import {
       getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
-      onAuthStateChanged, signOut, setPersistence, browserLocalPersistence
+      onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, updateProfile
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
     import {
       getFirestore, doc, setDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp,
@@ -5708,12 +5773,8 @@ function confirmLogout() {
     const SIGNUP_BONUS_COINS = 50;  // coins a new user gets on first signup
     const REFER_BONUS_COINS = 10;   // per unique successful referral
     const MAX_REFERRALS = 10;        // max 10 rewarded referrals per user
-    const AD_COIN_REWARD = 1;       // for watching one ad
-    const AD_DAILY_LIMIT = 5;       // max ads per day that give coins
-    const AD_WATCH_SECONDS = 15;    // how long the "ad" placeholder runs for
     const SPIN_COST_COINS = 5;      // ek spin ki keemat
 
-    document.getElementById('adDailyLimitText').textContent = AD_DAILY_LIMIT;
     document.getElementById('referBonusText').textContent = REFER_BONUS_COINS;
 
     // Capture ?ref=<uid> from the URL (someone's referral link) and remember
@@ -5812,6 +5873,8 @@ function confirmLogout() {
         if (navBal) navBal.textContent = window.isAdminUser ? '∞' : coins;
         const modalBal = document.getElementById('coinsModalBalance');
         if (modalBal) modalBal.textContent = window.isAdminUser ? '∞' : coins;
+        const profileCoins = document.getElementById('profileCoinsCount');
+        if (profileCoins) profileCoins.textContent = window.isAdminUser ? '∞' : coins;
         const referralProgress = document.getElementById('referralProgressText');
         if (referralProgress) {
           const count = Math.min(Number(data.referralCount || (Array.isArray(data.referrals) ? data.referrals.length : 0)), MAX_REFERRALS);
@@ -5893,8 +5956,9 @@ function confirmLogout() {
         window.isUserLoggedIn = true;
        loginBtn.style.display = 'none';
         userChip.style.display = 'flex';
-        document.getElementById('navUserPhoto').src = user.photoURL || '';
-        document.getElementById('navUserName').textContent = (user.displayName || 'User').split(' ')[0];
+        const navName = user.displayName || 'User';
+        setProfileImage(document.getElementById('navUserPhoto'), user.photoURL || '', navName);
+        document.getElementById('navUserName').textContent = navName.split(' ')[0];
         if (typeof closeLogin === 'function') closeLogin();
 
         if (user.email === ADMIN_EMAIL) {
@@ -6046,7 +6110,7 @@ function confirmLogout() {
     };
 
     // ============================================================
-    // # REFER & EARN — MODAL, REFERRAL, ADS, SPIN & COIN PURCHASES #
+    // # REFER & EARN — MODAL, REFERRAL, SPIN & COIN PURCHASES #
     // ============================================================
 
     function hideCoinsModal() {
@@ -6083,72 +6147,6 @@ function confirmLogout() {
         window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
       }
     };
-
-    // ---------- WATCH AD TAB ----------
-    // NOTE: This is a placeholder rewarded-ad flow (a timed overlay) so the
-    // coin-earning UX works end-to-end right away. To use a REAL ad network
-    // (e.g. Adsterra / Monetag / PropellerAds / Google AdSense H5 rewarded
-    // ads), replace the body of startWatchAd() with that network's rewarded
-    // ad call, and invoke grantAdCoin() only from ITS "reward earned"
-    // callback — never purely on a timer — so people can't fake it.
-    function todayStr() {
-      const d = new Date();
-      return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-    }
-
-    window.startWatchAd = async function () {
-      if (!window.isUserLoggedIn) { openLogin(); return; }
-      const statusEl = document.getElementById('adStatusText');
-      statusEl.textContent = '';
-      try {
-        const userRef = doc(db, "users", window.currentUserUid);
-        const snap = await getDoc(userRef);
-        const data = snap.data() || {};
-        const usedToday = (data.adWatchDate === todayStr()) ? (data.adWatchCount || 0) : 0;
-        if (usedToday >= AD_DAILY_LIMIT) {
-          statusEl.textContent = 'Today\'s ad limit is over. Try again tomorrow!';
-          return;
-        }
-      } catch (e) { console.warn(e); }
-
-      const overlay = document.getElementById('adOverlay');
-      const timerEl = document.getElementById('adTimerText');
-      overlay.style.display = 'flex';
-      let secondsLeft = AD_WATCH_SECONDS;
-      timerEl.textContent = secondsLeft;
-      const interval = setInterval(async () => {
-        secondsLeft -= 1;
-        timerEl.textContent = secondsLeft;
-        if (secondsLeft <= 0) {
-          clearInterval(interval);
-          overlay.style.display = 'none';
-          await grantAdCoin();
-        }
-      }, 1000);
-    };
-
-    async function grantAdCoin() {
-      const statusEl = document.getElementById('adStatusText');
-      try {
-        const userRef = doc(db, "users", window.currentUserUid);
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-          const data = snap.data() || {};
-          const today = todayStr();
-          const usedToday = (data.adWatchDate === today) ? (data.adWatchCount || 0) : 0;
-          if (usedToday >= AD_DAILY_LIMIT) throw new Error('LIMIT_REACHED');
-          tx.set(userRef, {
-            coins: increment(AD_COIN_REWARD),
-            adWatchDate: today,
-            adWatchCount: usedToday + 1
-          }, { merge: true });
-        });
-        statusEl.textContent = '🎉 +' + AD_COIN_REWARD + ' coin received!';
-      } catch (e) {
-        statusEl.textContent = (e && e.message === 'LIMIT_REACHED') ? 'Today\'s ad limit is over.' : 'Something went wrong, please try again.';
-      }
-      setTimeout(() => { statusEl.textContent = ''; }, 3000);
-    }
 
     // ---------- SPIN & WIN TAB ----------
     // Five fixed wheel prizes. ₹10 is display-only and can never be selected.
@@ -6368,7 +6366,7 @@ function confirmLogout() {
         if (statusEl) {
           statusEl.style.color = '#ff6b6b';
           statusEl.textContent = (e && e.message === 'NOT_ENOUGH')
-            ? `Not enough coins — you need ${coinCost}, earn more via Refer/Ad/Spin.`
+            ? `Not enough coins — you need ${coinCost}, earn more via Refer/Spin.`
             : (e && e.message === 'NO_PROFILE')
               ? 'Your profile isn\'t ready yet — please log out and log back in.'
               : 'Coin purchase failed. Please try again.';

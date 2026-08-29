@@ -4126,7 +4126,7 @@ var qrcode = function() {
         };
         grid.appendChild(card);
       });
-      hydrateGridStats(gridId, data);
+      hydrateGridStats(gridId, entries.map(e => e.item));
     }
 
     // ---------- MOBILE BACK BUTTON FIX ----------
@@ -4488,20 +4488,30 @@ var qrcode = function() {
       const liveWrap = document.getElementById('livePreviewWrap');
       const liveFrame = document.getElementById('livePreviewFrame');
       const liveFull = document.getElementById('livePreviewFullscreen');
+      // Cancel any still-pending preview wait from a previously opened template
+      // so it can't fire late and mess with this one (or leak a prep task).
+      if (window.cancelPendingLivePreview) window.cancelPendingLivePreview();
       if (item.downloadUrl) {
         const previewLoader = document.getElementById('livePreviewLoading');
         if (previewLoader) previewLoader.classList.remove('hidden');
-        beginPrepTask('');
+        // NOTE: this only drives the small overlay on the preview iframe —
+        // it must NOT touch the site-wide sitePrepLoader, otherwise every
+        // template click blocks the whole screen for up to several seconds
+        // (and worse, forever if the user navigates away before it settles).
         let previewSettled = false;
         const finishPreview = () => {
           if (previewSettled) return;
           previewSettled = true;
           if (previewLoader) previewLoader.classList.add('hidden');
-          endPrepTask();
         };
         liveFrame.addEventListener('load', finishPreview, { once: true });
         liveFrame.addEventListener('error', finishPreview, { once: true });
-        setTimeout(finishPreview, 15000);
+        const previewTimeoutId = setTimeout(finishPreview, 8000);
+        window.cancelPendingLivePreview = () => {
+          clearTimeout(previewTimeoutId);
+          finishPreview();
+          window.cancelPendingLivePreview = null;
+        };
         liveFrame.src = item.downloadUrl;
         liveFull.href = item.downloadUrl;
         liveWrap.style.display = 'flex';
@@ -4527,6 +4537,7 @@ var qrcode = function() {
       const liveFrame = document.getElementById('livePreviewFrame');
       const previewLoader = document.getElementById('livePreviewLoading');
       if (previewLoader) previewLoader.classList.add('hidden');
+      if (window.cancelPendingLivePreview) window.cancelPendingLivePreview();
       if (liveFrame) liveFrame.src = ''; // stop the live preview so it doesn't keep running in background
       filterMenu(lastMenuView);
     }
@@ -5904,7 +5915,7 @@ function confirmLogout() {
       // Wait for the actual DOM images used by the main page. This avoids
       // starting duplicate Image() requests and makes the loader disappear
       // only after those page images are loaded (or fail).
-      await Promise.allSettled(images.map(img => new Promise(resolve => {
+      const imagesReady = Promise.allSettled(images.map(img => new Promise(resolve => {
         if (prepStopRequested) { resolve(); return; }
 
         if (img.complete) {
@@ -5928,6 +5939,12 @@ function confirmLogout() {
         // listener registration.
         if (img.complete) setTimeout(finish, 0);
       })));
+
+      // Safety net: never let a slow/stuck image keep the loader on screen
+      // indefinitely. If images aren't done within a few seconds, move on.
+      const safetyTimeout = new Promise(resolve => setTimeout(resolve, 6000));
+
+      await Promise.race([imagesReady, safetyTimeout]);
 
       if (!prepStopRequested) hidePrepLoader();
     }

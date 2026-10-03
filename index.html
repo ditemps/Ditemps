@@ -5442,6 +5442,35 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
   </div>
 
   <!-- ============================================================
+       # OPEN IN CHROME POPUP #
+       Shown when someone taps Google login inside WhatsApp / Facebook /
+       Instagram (in-app browsers), where Google blocks sign-in.
+       ============================================================ -->
+  <style>
+    #inAppChromeModal.modal-overlay { z-index: 3000; padding: 20px; }
+    #inAppChromeModal .iac-box {
+      background: var(--card-bg, #fff); color: var(--text-main, #171717);
+      width: 100%; max-width: 340px; border-radius: 20px; padding: 26px 22px 22px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    #inAppChromeModal .iac-emoji { font-size: 44px; margin-bottom: 8px; }
+    #inAppChromeModal h3 { margin: 0 0 8px; font-size: 20px; }
+    #inAppChromeModal p { margin: 0 0 18px; font-size: 14px; line-height: 1.5; opacity: .85; }
+    #inAppChromeModal .iac-ok {
+      width: 100%; border: 0; border-radius: 999px; padding: 13px 18px;
+      font-size: 15px; font-weight: 700; cursor: pointer; background: #171717; color: #fff;
+    }
+  </style>
+  <div class="modal-overlay" id="inAppChromeModal">
+    <div class="iac-box" role="alertdialog" aria-labelledby="iacTitle" aria-describedby="iacMsg">
+      <div class="iac-emoji">🌐</div>
+      <h3 id="iacTitle">Open in Chrome browser</h3>
+      <p id="iacMsg">You can't log in inside this app's browser (WhatsApp / Facebook / Instagram). Please open this website in Chrome to continue.</p>
+      <button type="button" class="iac-ok" onclick="openInChromeBrowser()">OK</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
        # WELCOME / REFERRAL BONUS POPUP #
        One small reusable popup, reused for BOTH messages a new user
        sees a few seconds after their first-ever login:
@@ -9812,6 +9841,38 @@ var qrcode = function() {
       if (label) label.classList.toggle('checked');
     }
 
+    // ---------- IN-APP BROWSER (WhatsApp / Facebook / Instagram) -> OPEN IN CHROME ----------
+    window.isInAppBrowserNow = function () {
+      const ua = navigator.userAgent || '';
+      if (/FBAN|FBAV|FB_IAB|FBIOS|Instagram|WhatsApp|Messenger|Line\/|MicroMessenger|TikTok|Snapchat|Twitter/i.test(ua)) return true;
+      if (/Android/i.test(ua) && /; wv\)/i.test(ua)) return true;                 // Android WebView
+      if (/iPhone|iPad|iPod/i.test(ua) && !/Safari\//i.test(ua)) return true;     // iOS WebView
+      return false;
+    };
+    window.showInAppChromePopup = function () {
+      const m = document.getElementById('inAppChromeModal');
+      if (m) m.classList.add('active');
+    };
+    window.openInChromeBrowser = function () {
+      const url = location.href;
+      const ua = navigator.userAgent || '';
+      try {
+        if (/Android/i.test(ua)) {
+          // Android: force-open this URL in Chrome via an intent
+          const noScheme = url.replace(/^https?:\/\//i, '');
+          const scheme = location.protocol.replace(':', '');
+          location.href = 'intent://' + noScheme + '#Intent;scheme=' + scheme + ';package=com.android.chrome;end';
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+          // iOS: Chrome URL scheme (works if Chrome is installed)
+          location.href = url.replace(/^https:\/\//i, 'googlechromes://').replace(/^http:\/\//i, 'googlechrome://');
+        } else {
+          window.open(url, '_blank');
+        }
+      } catch (e) { window.open(url, '_blank'); }
+      const m = document.getElementById('inAppChromeModal');
+      if (m) m.classList.remove('active');
+    };
+
     // ---------- GOOGLE LOGIN BUTTON — SAFE CLICK HANDLER ----------
     // On slower mobile networks the Firebase module (loaded from a CDN)
     // can take a couple of seconds to finish loading. If the user taps
@@ -9821,6 +9882,7 @@ var qrcode = function() {
     // clicks it automatically, instead of failing silently.
     window.handleGoogleSignInClick = function () {
       const status = document.getElementById('loginStatusText');
+      if (window.isInAppBrowserNow()) { if (status) status.textContent = ''; window.showInAppChromePopup(); return; }
       if (window.__firebaseReady && typeof window.signInWithGoogle === 'function') {
         window.signInWithGoogle();
         return;
@@ -10950,8 +11012,9 @@ function confirmLogout() {
 
       try {
         // Google blocks sign-in popups inside WhatsApp/Instagram/Facebook/etc.
-        if (isInAppBrowser) {
-          if (status) status.textContent = 'Please open this website in Chrome to login with Google.';
+        if (isInAppBrowser || window.isInAppBrowserNow()) {
+          if (status) status.textContent = '';
+          window.showInAppChromePopup();
           return;
         }
 
@@ -12091,6 +12154,69 @@ window.showDitempsLandingPage = function() {
     youtube:   'https://www.youtube.com/@ditempsofficial'
   };
   document.querySelectorAll('.social-btn[data-social]').forEach(function(a){ a.href = SOCIAL_LINKS[a.dataset.social] || '#'; });
+})();
+</script>
+<!-- ============ PROFESSIONAL MOTION LAYER (subtle, GPU-friendly, respects reduced-motion) ============ -->
+<style id="dtMotion">
+:root{--dt-ease:cubic-bezier(.22,.8,.24,1)}
+/* Landing hero: gentle staggered fade-up on load */
+.dl-hero>*{animation:dtUp .7s var(--dt-ease) backwards}
+.dl-hero>:nth-child(1){animation-delay:.05s}.dl-hero>:nth-child(2){animation-delay:.15s}
+.dl-hero>:nth-child(3){animation-delay:.25s}.dl-hero>:nth-child(4){animation-delay:.35s}
+.dl-hero>:nth-child(5){animation-delay:.45s}
+@keyframes dtUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+/* Template cards: staggered entrance (fill-mode backwards so hover still works) */
+.template-card{animation:dtUp .5s var(--dt-ease) backwards!important;transition:transform .25s var(--dt-ease),box-shadow .25s var(--dt-ease)!important}
+.template-card:nth-child(2){animation-delay:.04s!important}.template-card:nth-child(3){animation-delay:.08s!important}
+.template-card:nth-child(4){animation-delay:.12s!important}.template-card:nth-child(5){animation-delay:.16s!important}
+.template-card:nth-child(6){animation-delay:.2s!important}.template-card:nth-child(n+7){animation-delay:.24s!important}
+.card-image-box{overflow:hidden}
+.card-image-box img{transition:transform .5s var(--dt-ease)}
+@media (hover:hover){
+  .template-card:hover{transform:translateY(-4px)!important;box-shadow:0 14px 32px rgba(20,10,30,.14)!important}
+  .template-card:hover .card-image-box img{transform:scale(1.05)}
+  .dl-template{transition:transform .3s var(--dt-ease),box-shadow .3s var(--dt-ease)}
+  .dl-template:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,15,10,.12)}
+  .dl-cta:hover,.dl-enter:hover,.generate-btn:hover,.login-btn:hover{transform:translateY(-1px)}
+}
+/* Buttons: smooth hover + tactile press */
+.dl-cta,.dl-signin,.dl-enter,.generate-btn,.login-btn,.modal-close,.auth-google-btn,.auth-tab{transition:transform .18s var(--dt-ease),box-shadow .2s ease,background-color .2s ease,opacity .2s ease}
+.dl-cta:active,.dl-signin:active,.dl-enter:active,.generate-btn:active,.login-btn:active,.modal-close:active,.auth-google-btn:active,.template-card:active{transform:scale(.97)!important}
+/* Modals: soft fade backdrop + pop box */
+.modal-overlay.active{animation:dtFadeIn .22s ease both}
+@keyframes dtFadeIn{from{opacity:0}to{opacity:1}}
+/* Header: soft shadow once the page is scrolled */
+.profile-header{transition:box-shadow .25s ease}
+.profile-header.dt-scrolled{box-shadow:0 4px 18px rgba(0,0,0,.10)}
+/* Scroll reveal (class added by JS only, so content never stays hidden) */
+.dt-reveal{opacity:0;transform:translateY(22px);transition:opacity .6s var(--dt-ease),transform .6s var(--dt-ease)}
+.dt-reveal.dt-in{opacity:1;transform:none}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .dl-hero>*,.template-card,.modal-overlay.active{animation:none!important}
+  .dt-reveal{opacity:1;transform:none;transition:none}
+  .template-card,.card-image-box img{transition:none!important}
+}
+</style>
+<script>
+(function(){
+  try{
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Header shadow on scroll
+    var hdr=document.querySelector('.profile-header');
+    if(hdr){var tick=false;window.addEventListener('scroll',function(){
+      if(tick)return;tick=true;requestAnimationFrame(function(){hdr.classList.toggle('dt-scrolled',window.scrollY>8);tick=false;});
+    },{passive:true});}
+    // Scroll-reveal for landing sections
+    if(reduce||!('IntersectionObserver' in window))return;
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('dt-in');io.unobserve(e.target);}
+    });},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.dl-strip,.dl-template,.dl-template-grid>*').forEach(function(el,i){
+      el.classList.add('dt-reveal');el.style.transitionDelay=(Math.min(i,6)*60)+'ms';io.observe(el);
+    });
+  }catch(e){console.warn('Motion layer skipped:',e);}
 })();
 </script>
 </body>

@@ -31,11 +31,11 @@
      id="ditempsLandingPage"                       The public marketing landing page shown before "Enter Ditemps"
      id="loginModal"                               Sign In / Sign Up popup (Google + email/password)
      id="settingsModal"                            Account/Profile popup (My Gifts, Wishlist, Refer & Earn, Settings)
-     id="walletModal"                              Website Wallet popup (balance, referral link, daily check-in)
+     id="walletModal"                              Website Wallet popup (balance, referral link)
      id="customizeModal"                           The form where a user fills in photos/text to build their gift
      id="paymentModal"                             UPI/UTR payment + "buy with wallet" screen
      "THIS IS THE SITE'S \"BACKEND\" (Firebase)"    Firebase project settings + ADMIN_EMAIL (near end of file)
-     "WEBSITE WALLET + REFER & EARN"                Wallet/referral/daily-check-in reward amounts (editable)
+     "WEBSITE WALLET + REFER & EARN"                Wallet/referral reward amounts (editable)
      "const freeTemplates ="                        The actual list of templates: names, prices, images, links —
      "const paidTemplates ="                        this is what you edit to add/change/remove a template.
      "const premiumTemplates ="                     Each list already has its own comment explaining its rules.
@@ -43,6 +43,7 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <meta name="color-scheme" content="light">
+ <script>/* Dark mode by default; applied before first paint to avoid a white flash. Users can still switch it off in Settings. */try{if(localStorage.getItem('ditemps_darkMode')!=='0')document.documentElement.classList.add('ditemps-dark')}catch(e){document.documentElement.classList.add('ditemps-dark')}</script>
 <!-- ============================================================
      # THIS IS THE SITE'S "TITLE" AND "SEO KEYWORDS" #
      Controls how the site appears in Google search.
@@ -1324,7 +1325,7 @@
      This is the round floating "🎁 Refer & Earn" button that sits at
      the bottom-right of every page, and the popup (wallet modal) it
      opens. The wallet modal shows the user's ₹ balance, their referral
-     link, and the daily check-in bonus.
+     link.
      TO EDIT: the button's text/emoji is in the HTML near id="referFab".
      The referral reward amounts are set in the JS wallet functions
      further down this file, not here — this section is CSS only.
@@ -2043,37 +2044,7 @@ body {
 .referral-stat-num { display:block; font-size:17px; font-weight:800; }
 .referral-stat-label { display:block; font-size:9.5px; color:#888; text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
 
-/* 7-Day Daily Check-in strip — replaces the old single random-reward
-   button. Each day is a small card (see renderDailyCheckinStrip() in the
-   JS); TODAY's claimable day is highlighted, past/future days are shown
-   for preview. To change the ₹ amounts, edit DAILY_CHECKIN_REWARDS in the JS. */
-.daily-checkin-strip {
-  background:#fff; border:1px solid #eee; border-radius:16px;
-  padding:14px; margin-top:10px;
-}
-.daily-checkin-strip h4 { margin:0 0 3px; font-size:14px; }
-.daily-checkin-strip-sub { margin:0 0 10px; color:#777; font-size:11px; }
-.daily-checkin-days {
-  display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;
-}
-.checkin-day-card {
-  border:1px solid #eee; border-radius:12px; padding:8px 4px;
-  text-align:center; background:#fafafa;
-}
-.checkin-day-card .cd-label { display:block; font-size:9px; color:#888; text-transform:uppercase; font-weight:700; }
-.checkin-day-card .cd-amount { display:block; font-size:14px; font-weight:800; margin:4px 0; }
-.checkin-day-card .cd-state { display:block; font-size:9px; color:#aaa; }
-.checkin-day-card.is-done { background:#f1f1f1; opacity:.6; }
-.checkin-day-card.is-today {
-  background:#111; border-color:#111;
-}
-.checkin-day-card.is-today .cd-label,
-.checkin-day-card.is-today .cd-amount { color:#fff; }
-.checkin-day-card.is-today .cd-state { color:#ffd77a; }
-.checkin-day-card.is-today { cursor:pointer; }
-/* Day 7 (the biggest reward) spans the full width so it stands out,
-   matching the reference screenshot's layout. */
-.checkin-day-card.cd-day-7 { grid-column: 1 / -1; }
+
 
 
 /* ============================================================
@@ -2206,7 +2177,7 @@ body.ditemps-landing-active > .modal-overlay.active { z-index:1000010 !important
 #ditempsLandingPage{position:relative;z-index:999999;display:block;background:#fff;color:#171717;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;overflow:hidden}
 #ditempsLandingPage *{box-sizing:border-box}
 .dl-wrap{width:min(1100px,calc(100% - 32px));margin:0 auto}
-.dl-nav{position:sticky;top:18px;z-index:10;margin:18px auto 0;width:min(1000px,calc(100% - 28px));height:58px;border:1px solid #e9e7e5;border-radius:20px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 18px;box-shadow:0 8px 28px rgba(0,0,0,.07)}
+.dl-nav{position:sticky;top:18px;z-index:10;margin:18px auto 0;width:min(1000px,calc(100% - 28px));height:58px;border:1px solid #e9e7e5;border-radius:14px;corner-shape:squircle;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 18px;box-shadow:0 8px 28px rgba(0,0,0,.07)}
 .dl-brand{font-family:Georgia,"Times New Roman",serif;font-size:25px;letter-spacing:-.8px}.dl-brand-mark{display:inline-flex;width:34px;height:34px;border:1px solid #ddd;border-radius:50%;align-items:center;justify-content:center;margin-right:8px;font-size:18px;overflow:hidden}.dl-brand-mark img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .dl-nav-actions{display:flex;align-items:center;gap:9px}.dl-signin,.dl-enter{border:1px solid #ddd;border-radius:999px;background:#fff;padding:10px 18px;font-weight:600;cursor:pointer}.dl-enter{background:#171717;color:#fff;border-color:#171717}
 .dl-hero{text-align:center;padding:115px 12px 78px}.dl-kicker{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#9b8b78;font-weight:700;margin-bottom:22px}.dl-hero h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(48px,8vw,88px);line-height:.92;letter-spacing:-4px;font-weight:500;margin:0 auto 25px;max-width:820px}.dl-hero p{max-width:590px;margin:0 auto;color:#777;font-size:16px;line-height:1.65}.dl-cta{margin-top:30px;display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border:0;border-radius:999px;background:#171717;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 28px rgba(0,0,0,.13)}.dl-note{margin-top:15px;color:#999;font-size:12px}
@@ -3312,7 +3283,8 @@ html.ditemps-dark .dl-footer {
   box-sizing: border-box;
   background: rgba(255,255,255,.96) !important;
   border: 1px solid #e7e7e9 !important;
-  border-radius: 22px !important;
+  border-radius: 14px !important;
+  corner-shape: squircle;
   box-shadow: 0 3px 12px rgba(0,0,0,.07) !important;
   display: flex !important;
   align-items: center !important;
@@ -3625,7 +3597,7 @@ html.ditemps-dark .ditemps-filter-menu-item.active { color:#e8b36a; }
     width:calc(100% - 24px) !important;
     min-height:66px;
     padding:10px 12px !important;
-    border-radius:19px !important;
+    border-radius:13px !important;
   }
   .ditemps-brand-mark { width:39px; height:39px; font-size:25px; }
   .ditemps-brand-name { font-size:23px; }
@@ -4295,9 +4267,6 @@ html.ditemps-dark .auth-sheet-header{background:#1d1f25;border-bottom-color:#2c2
 html.ditemps-dark .auth-sheet-brand,html.ditemps-dark .auth-field input,html.ditemps-dark .auth-google-btn{color:#f3f3f5}
 html.ditemps-dark .auth-field input,html.ditemps-dark .auth-google-btn{background:#1d1f25;border-color:#33353c}
 html.ditemps-dark .referral-stat-card,html.ditemps-dark .daily-checkin-strip,html.ditemps-dark .wallet-box,html.ditemps-dark .link-result,html.ditemps-dark .codes-admin-card{background:#191b20!important;border-color:#2c2e35!important;color:#f3f3f5}
-html.ditemps-dark .checkin-day-card{background:#1d1f25;border-color:#2c2e35}
-html.ditemps-dark .checkin-day-card .cd-amount,html.ditemps-dark .daily-checkin-strip h4{color:#f3f3f5}
-html.ditemps-dark .checkin-day-card.is-today{background:#f3f3f5}html.ditemps-dark .checkin-day-card.is-today .cd-label,html.ditemps-dark .checkin-day-card.is-today .cd-amount{color:#111}
 html.ditemps-dark .category-chip,html.ditemps-dark .badge.cat{background:#26282e!important;color:#c9cbd1!important;border-color:#33353c!important}
 html.ditemps-dark .template-card{border-color:#2a2c33!important;box-shadow:0 4px 14px rgba(0,0,0,.35)!important}
 html.ditemps-dark .ditemps-rect-search,html.ditemps-dark .ditemps-filter-btn{border-color:#33353c!important}
@@ -4346,6 +4315,7 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
 .template-card .view-btn{position:absolute !important;right:10px;bottom:10px;padding:7px 14px !important}
 #openLinkBtn{background:#171717 !important;color:#fff !important;border:none !important;padding:12px 16px !important;font-size:14px;font-weight:700}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <noscript>
@@ -4354,6 +4324,7 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
 </noscript>
 
   <div id="ditempsLandingPage" aria-label="Ditemps landing page">
+    <div class="dl-progress" id="dlProg"></div><button class="dl-sticky" id="dlSticky" onclick="enterDitempsApp()">Create a surprise — free ✨</button>
     <nav class="dl-nav">
       <div class="dl-brand"><span class="dl-brand-mark"><img src="https://files.catbox.moe/kkta4i.png" alt="Ditemps logo"></span>Ditemps</div>
       <div class="dl-nav-actions">
@@ -4362,16 +4333,17 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
         </button>
         <div id="landingWalletChip" class="ditemps-wallet-chip" style="display:none; cursor:pointer;" aria-label="Website wallet balance" onclick="openWalletModal()">₹<span id="landingWalletBalance">0</span></div>
         <button class="dl-signin" id="landingSigninBtn" onclick="if(typeof openLogin==='function') openLogin();">Sign in</button>
-        <button class="dl-enter" onclick="enterDitempsApp()">Enter Ditemps</button>
       </div>
     </nav>
     <main>
       <section class="dl-hero">
-        <div class="dl-kicker">Beautiful moments, made personal</div>
-        <h1>Bring Smiles<br>to Faces you<br>LOVE</h1>
-        <p>Create beautiful emotional stories, memories, and moments with stunning cinematic templates.</p>
-        <button class="dl-cta" onclick="enterDitempsApp()">Try for Free</button>
-        <div class="dl-note">Crafted for people you love&nbsp; • &nbsp;50+ templates available</div>
+        <a class="dl-offer" onclick="if(typeof openLogin==='function')openLogin();">🎁 New here? Sign up &amp; get ₹15 wallet bonus →</a>
+        <div class="dl-kicker">Surprises for <span class="dl-rot" id="dlRot">birthdays</span></div>
+        <h1>Make their day<br><span class="dl-hl">unforgettable</span><br>in 2 minutes</h1>
+        <p>Pick a template, add your photos and a heartfelt message, and send one magical link. No coding. No design skills. Just love.</p>
+        <div class="dl-actions"><button class="dl-cta" onclick="enterDitempsApp()">Create a surprise — free ✨</button><button class="dl-ghost" onclick="document.querySelector('.dl-demo').scrollIntoView({behavior:'smooth'})">Watch live demo ↓</button></div>
+        <div class="dl-note">Made for the people you love</div>
+        <div class="dl-stats"><div><b data-count="50" data-suffix="+">50+</b><span>templates</span></div><div><b>Free</b><span>to start</span></div><div><b data-count="2" data-suffix=" min">2 min</b><span>to create</span></div></div>
       </section>
       <div class="dl-strip dl-wrap" aria-label="Ditemps template previews">
         <div class="dl-strip-track">
@@ -4396,11 +4368,12 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
         </div>
       </div>
 
+      <section class="dl-occ dl-wrap" aria-label="Occasions"><div class="dl-occ-title">Pick an occasion</div><div class="dl-occ-row"><button onclick="enterDitempsApp()">🎂 Birthday</button><button onclick="enterDitempsApp()">💍 Anniversary</button><button onclick="enterDitempsApp()">❤ Proposal</button><button onclick="enterDitempsApp()">🤝 Friendship</button><button onclick="enterDitempsApp()">🎉 Festivals</button><button onclick="enterDitempsApp()">💌 Love letters</button></div></section>
       <section class="dl-featured-section" aria-label="Featured templates">
         <div class="dl-wrap">
           <div class="dl-featured-head">
-            <h2>Featured</h2>
-            <p>Handpicked templates by our team</p>
+            <h2>Loved by people like you</h2>
+            <p>Handpicked templates, ready to make yours in minutes.</p>
           </div>
           <div class="dl-featured-carousel" id="landingFeaturedCarousel">
             <div class="dl-featured-track" id="landingFeaturedTrack" aria-live="polite"></div>
@@ -4408,13 +4381,13 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
         </div>
       </section>
 
-      <section class="dl-section"><div class="dl-wrap"><div class="dl-demo"><div class="dl-eyebrow">Live Demo</div><h2>Feel the magic before you buy</h2><p>Every template is a live, cinematic experience — personalised and made to make someone feel truly special.</p><div class="dl-demo-card dl-demo-video-card">
+      <section class="dl-section"><div class="dl-wrap"><div class="dl-demo"><div class="dl-eyebrow">Live preview</div><h2>Try one before you send it</h2><p>Tap around. Every template is a real, living surprise — not a static card.</p><div class="dl-demo-card dl-demo-video-card">
   <iframe class="dl-demo-video" src="https://s96693884-gif.github.io/Birthdaypremium/" title="Live template preview" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div></div></div></section>
 
-      <section class="dl-section"><div class="dl-wrap dl-two"><div class="dl-copy"><div class="dl-eyebrow">Surprise your loved ones</div><h2>Make a moment they will never forget</h2><p>Create beautiful personalised surprise websites in minutes. Choose a template, add your photos, videos, music, and heartfelt messages, then share a unique link.</p><div class="dl-feature-list"><div class="dl-feature"><b>Premium Templates</b><span>A growing collection of beautifully crafted templates.</span></div><div class="dl-feature"><b>Fully Customizable</b><span>No design or coding skills required.</span></div><div class="dl-feature"><b>Share Instantly</b><span>Get a unique link and QR code.</span></div></div></div><div class="dl-art">Your Memories<br>•<br>Your Story</div></div></section>
+      <section class="dl-section"><div class="dl-wrap dl-two"><div class="dl-copy"><div class="dl-eyebrow">Surprise your loved ones</div><h2>Make a moment they will never forget</h2><p>Turn your photos, music and words into a surprise that opens like a little story.</p><div class="dl-feature-list"><div class="dl-feature"><b>Crafted, not copied</b><span>Every template is designed to feel like a tiny film.</span></div><div class="dl-feature"><b>Yours in minutes</b><span>Swap in your own photos and words. No design skills needed.</span></div><div class="dl-feature"><b>One link, one tap</b><span>Share by link or QR code, right on their phone.</span></div></div></div><div class="dl-art dl-art-live" id="dlGift" role="button" tabindex="0" aria-label="Open the sample surprise"><div class="dl-gift-ico">🎁</div><div class="dl-gift-t" id="dlGiftT">A surprise is waiting for you</div><div class="dl-gift-b" id="dlGiftB">Tap to open</div></div></div></section>
 
-      <section class="dl-section"><div class="dl-wrap"><div class="dl-section-head"><div class="dl-eyebrow">Create your own</div><h2>In 5 minutes</h2><p>Choose a template, personalise your love, and share it instantly.</p></div><div class="dl-steps"><div class="dl-step"><div class="dl-step-num">01</div><h3>Choose a Template</h3><p>Explore beautifully crafted templates and choose the one that perfectly matches your special occasion.</p></div><div class="dl-step"><div class="dl-step-num">02</div><h3>Personalise your love</h3><p>Add your photos, videos, messages, music and beautiful memories.</p></div><div class="dl-step"><div class="dl-step-num">03</div><h3>Share</h3><p>Get your unique link and a beautiful QR code and share instantly.</p></div></div></div></section>
+      <section class="dl-section"><div class="dl-wrap"><div class="dl-section-head"><div class="dl-eyebrow">Create your own</div><h2>Ready in 2 minutes</h2><p>Pick a template, add your memories, share one magical link.</p></div><div class="dl-steps"><div class="dl-step"><div class="dl-step-num">01</div><h3>Pick your vibe</h3><p>Browse 50+ crafted templates for birthdays, anniversaries, proposals and festivals.</p></div><div class="dl-step"><div class="dl-step-num">02</div><h3>Add your memories</h3><p>Drop in photos, videos, music and a message straight from the heart.</p></div><div class="dl-step"><div class="dl-step-num">03</div><h3>Send the surprise</h3><p>Get a private link and QR code. Share it anywhere — they will open it again and again.</p></div></div></div></section>
 
       <!-- ⚠️ EDIT THIS: "Memory Flipbook" showcase section on the landing page.
            The iframe and the button link below both point to
@@ -4436,19 +4409,21 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
       </iframe>
     </div>
     <div class="dl-copy dl-flipbook-copy">
-      <div class="dl-eyebrow">A collection of moments</div>
-      <h2>A flipbook made from your moments</h2>
-      <p>Add your favourite photos and turn them into a page-turning flipbook — flip through it like a real photo album, one memory at a time.</p>
+      <div class="dl-eyebrow">A keepsake</div>
+      <h2>Memories that turn like pages</h2>
+      <p>Pick your favourite photos and we bind them into a flipbook. Flip through it like a real album, one memory at a time.</p>
       <a class="dl-flipbook-link" href="https://soravtemps.github.io/Flipbook/?id=3EvhHrGMsghG4tQf6Y8C" target="_blank" rel="noopener">Open flipbook ↗</a>
     </div>
   </div>
 </section>
 
-      <section class="dl-section"><div class="dl-wrap"><div class="dl-section-head"><div class="dl-eyebrow">FAQ</div><h2>Frequently asked questions</h2><p>Everything you need to know.</p></div><div class="dl-faq"><details><summary>What is Ditemps?</summary><p>Ditemps lets you create personalised digital surprises and emotional stories from ready-made templates.</p></details><details><summary>Do I need coding or design skills?</summary><p>No. Templates are designed to be customised without coding or design skills.</p></details><details><summary>What can I customise?</summary><p>You can personalise your story with photos, videos, messages, music and memories.</p></details><details><summary>How do I share my surprise?</summary><p>After creating it, you can use the unique share link and QR code.</p></details></div></div></section>
+      <section class="dl-section"><div class="dl-wrap"><div class="dl-section-head"><div class="dl-eyebrow">Ideas &amp; guides</div><h2>Make it mean something</h2><p>Short, honest guides to help you say it better. Written by the Ditemps team.</p></div><div class="dl-guides"><a class="dl-guide" href="/guide-birthday-message.html"><b>How to write a birthday message that feels personal</b><span>Start with one real memory, not a list of compliments.</span><i>Read guide →</i></a><a class="dl-guide" href="/guide-anniversary-ideas.html"><b>Anniversary surprise ideas that cost almost nothing</b><span>Memory timelines, letters for the future and a recreated first date.</span><i>Read guide →</i></a><a class="dl-guide" href="/guide-plan-a-proposal.html"><b>How to plan a proposal surprise</b><span>A calm checklist: place, words, who should know, and a keepsake.</span><i>Read guide →</i></a><a class="dl-guide" href="/guide-digital-vs-physical-gifts.html"><b>Digital vs physical gifts</b><span>When a personalised link beats a present, and when to do both.</span><i>Read guide →</i></a></div></div></section>
 
-      <section class="dl-final"><h2>Create something beautiful for someone you love.</h2><p>Made with ❤️ in India</p><button class="dl-cta" onclick="enterDitempsApp()">Enter Ditemps</button></section>
+      <section class="dl-section"><div class="dl-wrap"><div class="dl-section-head"><div class="dl-eyebrow">FAQ</div><h2>Good to know</h2><p>Quick answers before you start.</p></div><div class="dl-faq"><details><summary>What is Ditemps?</summary><p>Ditemps lets you create personalised digital surprises and emotional stories from ready-made templates.</p></details><details><summary>Do I need coding or design skills?</summary><p>No. Templates are designed to be customised without coding or design skills.</p></details><details><summary>What can I customise?</summary><p>You can personalise your story with photos, videos, messages, music and memories.</p></details><details><summary>How do I share my surprise?</summary><p>After creating it, you can use the unique share link and QR code.</p></details><details><summary>Is it really free?</summary><p>Many templates are free to start. Premium ones have a small price, and new users get a ₹15 wallet bonus on signup.</p></details><details><summary>Can they open it again later?</summary><p>Yes. The link stays active, so they can come back to it whenever they like.</p></details></div></div></section>
+
+      <section class="dl-final"><h2>Someone you love is one link away.</h2><p>Make it personal. Make it today.</p><button class="dl-cta" onclick="enterDitempsApp()">Create a surprise — free ✨</button></section>
     </main>
-    <footer class="dl-footer"><div class="dl-wrap dl-footer-inner"><span>© 2026 Ditemps. All rights reserved.</span><span><a href="javascript:void(0)" onclick="showDitempsTerms();return false;">Terms of Service</a><a href="javascript:void(0)" onclick="showDitempsPrivacy();return false;">Privacy Policy</a><a href="javascript:void(0)" onclick="contactDitempsSupport();return false;">Contact Us</a><a href="javascript:void(0)" onclick="showDitempsDmca();return false;">DMCA Policy</a></span></div></footer>
+    <footer class="dl-footer"><div class="dl-wrap dl-footer-inner"><span>© 2026 Ditemps. All rights reserved.</span><span><a href="/about.html">About</a><a href="/guides.html">Guides</a><a href="/terms.html">Terms of Service</a><a href="/privacy.html">Privacy Policy</a><a href="/contact.html">Contact Us</a><a href="javascript:void(0)" onclick="showDitempsDmca();return false;">DMCA Policy</a></span></div></footer>
   </div>
 
   <!-- Moved outside #ditempsLandingPage (unlike the source markup) so this
@@ -5199,10 +5174,6 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
           </div>
         </div>
 
-        <!-- 7-day Daily Check-in strip (Day 1 → Day 7, fixed reward amounts
-             shown upfront). Only ONE day is ever "claimable" at a time —
-             today's day in the cycle — the rest are shown for preview only.
-             See DAILY_CHECKIN_REWARDS near the top of the JS to edit amounts. -->
         <div class="social-promo">
           <h4>Daily promo codes · ₹10–100</h4>
           <p>Reach our social media for daily ₹10–100 promo codes and redeem them here.</p>
@@ -7060,7 +7031,7 @@ var qrcode = function() {
           { type: 'music', key: 'music', label: 'Background Music (optional, upload mp3)', required: false }
         ],
       downloadUrl: "https://soravtemps.github.io/Card1/" },
-     { name:"Anniversary one photo", category:"Anniversary",emoji:"😘",desc:"A cute 1 photo aniversary template for your partner's and just try and send it to your favourite person.",photosRequired: 1,pages: ["💸"],image:"https://files.catbox.moe/fbt3n4.png", downloadUrl: "https://soravtemps.github.io/Card2/" }
+     { name:"Anniversary one photo", category:"Anniversary",emoji:"😘",desc:"A cute 1 photo anniversary template for your partner's and just try and send it to your favourite person.",photosRequired: 1,pages: ["💸"],image:"https://files.catbox.moe/fbt3n4.png", downloadUrl: "https://soravtemps.github.io/Card2/" }
     ];
 
     // Old "Home" categories, kept as-is for the Surprise section
@@ -7748,7 +7719,7 @@ var qrcode = function() {
     function getOfferTextHtml(item, kind) {
       if ((kind === 'paid' || kind === 'premium') && isOfferItem(item)) {
         const { percent } = getOfferPricing(item);
-        return percent >= 100 ? `<span class="off-text">100% FREE &middot; Limited time offer</span>` : `<span class="off-text">${percent}% off</span>`;
+        return percent >= 100 ? `<span class="off-text">Limited offer</span>` : `<span class="off-text">${percent}% off</span>`;
       }
       return '';
     }
@@ -10444,7 +10415,7 @@ var qrcode = function() {
     };
 
     function loadDitempsSettingsToggles() {
-      const dark = getDitempsSetting('darkMode', false);
+      const dark = getDitempsSetting('darkMode', true);
       document.documentElement.classList.toggle('ditemps-dark', dark);
       document.body.classList.toggle('ditemps-dark', dark);
 
@@ -10667,7 +10638,7 @@ var qrcode = function() {
     // Apply saved theme immediately on page load.
     (function () {
       let dark = false;
-      try { dark = localStorage.getItem('ditemps_darkMode') === '1'; } catch (e) {}
+      dark = true; try { dark = localStorage.getItem('ditemps_darkMode') !== '0'; } catch (e) {}
       document.documentElement.classList.toggle('ditemps-dark', dark);
       window.addEventListener('DOMContentLoaded', loadDitempsSettingsToggles);
     })();
@@ -11231,7 +11202,7 @@ function confirmLogout() {
 
 
     // ============================================================
-    // # WEBSITE WALLET + REFER & EARN + DAILY CHECK-IN — EDITABLE #
+    // # WEBSITE WALLET + REFER & EARN — EDITABLE #
     // Wallet money is website-only credit (₹ symbol), not real/withdrawable
     // cash — it can only be spent to unlock paid/premium templates here.
     // TO CHANGE ANY REWARD AMOUNT: just edit the numbers below.
@@ -11247,11 +11218,6 @@ function confirmLogout() {
                                             // below). Not given at signup, to stop fake-account abuse.
     const MAX_REFERRALS = 10;              // cap on how many referral bonuses one account can earn
 
-    // Daily Check-in — fixed 7-day reward cycle (Day 1 → Day 7, shown to the
-    // user in advance, then it loops back to Day 1). Index 0 = Day 1's reward.
-    const DAILY_CHECKIN_REWARDS = [1, 3, 5, 10, 20, 25, 50]; // ₹ per day, Day 1..Day 7
-    const DAILY_CHECKIN_COOLDOWN_MS = 24 * 60 * 60 * 1000;      // must wait this long before next claim
-    const DAILY_CHECKIN_STREAK_BREAK_MS = 48 * 60 * 60 * 1000;  // miss a day beyond this and the streak resets to Day 1
 
     // Capture ?ref=<uid> and remember it until a genuinely new account signs in.
     // Also counts this as a "link open" on the referrer's stats (best-effort —
@@ -11526,29 +11492,7 @@ function confirmLogout() {
         purchasesEls.forEach(el => { if (el) el.textContent = purchases; });
         earningsEls.forEach(el => { if (el) el.textContent = '₹' + earnings; });
 
-        updateDailyCheckinState(data);
       });
-    }
-
-    // Works out which day of the 7-day cycle is next, and whether it's
-    // claimable right now (based on dailyCheckinAt + dailyCheckinStreakDay
-    // saved on the user's Firestore doc from their last claim).
-    function getDailyCheckinState(data) {
-      const raw = data && data.dailyCheckinAt;
-      const lastMs = raw && typeof raw.toMillis === 'function' ? raw.toMillis() : Number(raw || 0);
-      const lastDay = Number((data && data.dailyCheckinStreakDay) || 0);
-
-      if (!lastMs || !lastDay) return { available: true, remaining: 0, nextDay: 1 }; // never claimed before
-
-      const elapsed = Date.now() - lastMs;
-      if (elapsed >= DAILY_CHECKIN_STREAK_BREAK_MS) {
-        return { available: true, remaining: 0, nextDay: 1 }; // missed a day — streak resets to Day 1
-      }
-      const nextDay = lastDay >= 7 ? 1 : lastDay + 1; // Day 7 done → loop back to Day 1
-      if (elapsed >= DAILY_CHECKIN_COOLDOWN_MS) {
-        return { available: true, remaining: 0, nextDay };
-      }
-      return { available: false, remaining: DAILY_CHECKIN_COOLDOWN_MS - elapsed, nextDay };
     }
 
     function formatCountdown(ms) {
@@ -11557,68 +11501,6 @@ function confirmLogout() {
       const m = Math.floor((total % 3600) / 60);
       return `${h}h ${m}m`;
     }
-
-    // Draws the 7 day-cards (Day 1..Day 7) into both the profile tab and
-    // the wallet modal. Days before "today" show as claimed, "today" is
-    // tappable when available (or shows a countdown when on cooldown),
-    // and days after "today" are shown locked as a preview.
-    function renderDailyCheckinStrip(data) {
-      const state = getDailyCheckinState(data || {});
-      const html = DAILY_CHECKIN_REWARDS.map((amount, idx) => {
-        const dayNum = idx + 1;
-        let cls = 'checkin-day-card' + (dayNum === 7 ? ' cd-day-7' : '');
-        let stateLabel;
-        let clickable = false;
-        if (dayNum < state.nextDay) {
-          cls += ' is-done';
-          stateLabel = 'Claimed';
-        } else if (dayNum === state.nextDay) {
-          cls += ' is-today';
-          if (state.available) { stateLabel = 'Tap to claim'; clickable = true; }
-          else { stateLabel = 'Wait ' + formatCountdown(state.remaining); }
-        } else {
-          stateLabel = 'Locked';
-        }
-        return `<div class="${cls}"${clickable ? ' onclick="claimDailyCheckin()"' : ''}>` +
-          `<span class="cd-label">Day ${dayNum}</span>` +
-          `<span class="cd-amount">₹${amount}</span>` +
-          `<span class="cd-state">${stateLabel}</span></div>`;
-      }).join('');
-      ['dailyCheckinDaysProfile', 'dailyCheckinDaysModal'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = html;
-      });
-    }
-
-    function updateDailyCheckinState(data) {
-      renderDailyCheckinStrip(data);
-    }
-
-    window.claimDailyCheckin = async function () { return; /* daily check-in removed — promo codes are given on social media instead */
-      if (!window.isUserLoggedIn) { openLogin(); return; }
-      const statusIds = ['dailyCheckinStatus', 'dailyCheckinStatusModal'];
-      statusIds.forEach(id => { const e = document.getElementById(id); if (e) e.textContent = 'Claiming…'; });
-      try {
-        const userRef = doc(db, "users", window.currentUserUid);
-        let rewardGiven = 0;
-        await runTransaction(db, async (tx) => {
-          const snap = await tx.get(userRef);
-          const data = snap.data() || {};
-          const state = getDailyCheckinState(data);
-          if (!state.available) throw new Error('COOLDOWN');
-          rewardGiven = DAILY_CHECKIN_REWARDS[state.nextDay - 1];
-          tx.set(userRef, {
-            walletBalance: increment(rewardGiven),
-            dailyCheckinAt: serverTimestamp(),
-            dailyCheckinStreakDay: state.nextDay,
-            lastDailyCheckinReward: rewardGiven
-          }, { merge: true });
-        });
-        statusIds.forEach(id => { const e = document.getElementById(id); if (e) e.textContent = `🎉 Day reward claimed: ₹${rewardGiven} added to wallet!`; });
-      } catch (e) {
-        statusIds.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = e.message === 'COOLDOWN' ? '⏳ Come back tomorrow for your next day\'s reward.' : 'Could not claim right now. Please try again.'; });
-      }
-    };
 
     window.copyReferLink = function () {
       const input = document.getElementById('referLinkInput');
@@ -12219,5 +12101,190 @@ html{scroll-behavior:smooth}
   }catch(e){console.warn('Motion layer skipped:',e);}
 })();
 </script>
+<!-- ============ DOT GRID BACKGROUND (every plain dark background) ============ -->
+<style id="ditemps-dot-grid">
+/* Dark theme: soft light dots on every plain #101114 surface (page, landing, featured, settings).
+   Cards / header / modals keep their own solid colour, so dots show only on the bare background. */
+html.ditemps-dark{--dt-dot:rgba(255,255,255,.14);--dt-dot-size:44px}
+html.ditemps-dark body,
+body.ditemps-dark,
+html.ditemps-dark #ditempsLandingPage,
+html.ditemps-dark .dl-featured-section,
+html.ditemps-dark #settingsModal.modal-overlay,
+html.ditemps-dark #settingsModal .modal-box{
+  background-color:#101114 !important;
+  background-image:radial-gradient(circle,var(--dt-dot) 1.5px,transparent 1.8px) !important;
+  background-size:var(--dt-dot-size) var(--dt-dot-size) !important;
+  background-position:center top !important;
+}
+/* Carousel edge fades: use a mask so the dots stay visible instead of a solid patch */
+html.ditemps-dark .dl-strip::before,
+html.ditemps-dark .dl-strip::after{display:none !important}
+html.ditemps-dark .dl-strip{
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 11%,#000 89%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 11%,#000 89%,transparent 100%);
+}
+@media(max-width:760px){html.ditemps-dark{--dt-dot-size:40px}}
+/* Light theme: dots only on the landing hero */
+html:not(.ditemps-dark) #ditempsLandingPage .dl-hero{
+  background-image:radial-gradient(circle,rgba(0,0,0,.16) 1.5px,transparent 1.8px);
+  background-size:44px 44px;background-position:center top;
+}
+</style>
+<style id="ditemps-glow-up">
+#ditempsLandingPage{font-family:"Plus Jakarta Sans",Inter,-apple-system,"Segoe UI",sans-serif}
+#ditempsLandingPage :is(h1,h2,.dl-brand){font-family:Fraunces,Georgia,serif}
+.dl-hero{position:relative}
+.dl-hero h1{font-size:clamp(40px,9vw,88px);letter-spacing:-2px;line-height:1}
+.dl-hl{font-style:italic;background:linear-gradient(90deg,#ff6b8a,#ffb86b,#c58bff,#ff6b8a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:dlShift 6s linear infinite}
+@keyframes dlShift{to{background-position:200% 0}}
+.dl-offer{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;margin-bottom:22px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;color:#b0304f;background:rgba(255,92,135,.1);border:1px solid rgba(255,92,135,.35);animation:dlPulse 2.6s ease-in-out infinite}
+@keyframes dlPulse{50%{box-shadow:0 0 0 7px rgba(255,92,135,.08)}}
+.dl-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}.dl-actions .dl-cta{margin-top:0}
+.dl-cta{background:linear-gradient(135deg,#ff5c87,#c8385a)!important;color:#fff!important;box-shadow:0 12px 30px rgba(200,56,90,.4)!important}
+.dl-ghost{padding:14px 24px;border-radius:999px;font-weight:700;cursor:pointer;background:transparent;color:inherit;border:1px solid rgba(128,128,140,.45);font-family:inherit;font-size:inherit}
+.dl-stats{display:flex;justify-content:center;gap:clamp(22px,7vw,60px);margin-top:42px}
+.dl-stats b{display:block;font:500 clamp(28px,6vw,40px)/1 Fraunces,Georgia,serif}.dl-stats span{font-size:12px;opacity:.6}
+.dl-step{transition:transform .3s,border-color .3s,box-shadow .3s}
+.dl-step-num{background:linear-gradient(135deg,#ff6b8a,#ffb86b);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-weight:800}
+@media(hover:hover){.dl-step:hover{transform:translateY(-6px);border-color:#ff5c87!important;box-shadow:0 16px 34px rgba(255,92,135,.18)}}
+/* ---- dark mode: make everything visible ---- */
+html.ditemps-dark .dl-signin{background:transparent!important;color:#f3f3f5!important;border-color:#4a4d57!important}
+html.ditemps-dark .dl-offer{color:#ffd0dc}
+html.ditemps-dark .dl-kicker{color:#d9b98f!important}
+html.ditemps-dark .dl-ghost{color:#f3f3f5}
+html.ditemps-dark #ditempsLandingPage :is(h1,h2,h3,summary,.dl-brand){color:#f5f5f7!important}
+html.ditemps-dark #ditempsLandingPage :is(.dl-hero p,.dl-section p,.dl-copy p,.dl-final p,.dl-note,details p,.dl-feature){color:#a9abb2!important}
+html.ditemps-dark .dl-step,html.ditemps-dark .dl-feature{background:#191b20!important;border:1px solid #2c2e35;border-radius:20px;padding:22px}
+html.ditemps-dark .dl-final{background:radial-gradient(600px circle at 50% 0,rgba(255,92,135,.25),transparent 70%)!important}
+html.ditemps-dark .dl-final .dl-cta{color:#fff!important}
+.dl-signin{white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.dl-hl,.dl-offer{animation:none}}
+</style>
+<script>
+(function(){try{
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target;el.classList.add('dt-in');
+  el.querySelectorAll&&el.querySelectorAll('[data-count]').forEach(function(n){var to=+n.dataset.count,sf=n.dataset.suffix||'',t0=performance.now();(function f(t){var k=Math.min((t-t0)/1200,1);n.textContent=Math.round(to*(1-Math.pow(1-k,3)))+sf;if(k<1)requestAnimationFrame(f)})(t0)});io.unobserve(el)})},{threshold:.15});
+ document.querySelectorAll('.dl-stats,.dl-step,.dl-feature,.dl-faq details,.dl-section-head,.dl-copy,.dl-final').forEach(function(el,i){el.classList.add('dt-reveal');el.style.transitionDelay=(i%4)*70+'ms';io.observe(el)});
+}catch(e){}})();
+</script>
+<style id="ditemps-card-polish">
+/* ---- App template cards ---- */
+.templates-grid{gap:14px}
+.template-card{border-radius:18px!important;overflow:hidden}
+.template-card .card-image-box{aspect-ratio:4/3;height:auto!important}
+.template-card .card-image-box img{width:100%;height:100%;object-fit:cover}
+.template-card .card-info{padding:12px 14px 14px!important;gap:6px!important}
+.template-card .cat-tag{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#c8385a}
+.template-card .card-info h3{font-size:15px!important;font-weight:700!important;line-height:1.3!important;white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden!important;min-height:2.6em!important}
+.template-card .card-info>p{font-size:12px!important;line-height:1.5!important;color:#7a7480;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.template-card .card-footer{padding-top:10px!important;margin-top:auto}
+.template-card .view-btn{border-radius:999px!important;padding:8px 16px!important;font-weight:700;font-size:12px}
+html.ditemps-dark .template-card .cat-tag{color:#ff8fab}
+html.ditemps-dark .template-card .card-info>p{color:#9a9ca4}
+/* ---- Landing featured cards ---- */
+.dl-featured-card h3{font-size:17px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.dl-featured-card p{font-size:13px;line-height:1.5;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;opacity:.75}
+.dl-featured-card .badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.dl-featured-card .card-metrics{gap:10px;font-size:12px;opacity:.8}
+.dl-featured-card .card-footer{padding-top:12px}
+</style>
+<style id="ditemps-card-fix">
+/* broken/blocked images: never show giant alt text */
+img{font-size:11px;color:#8a8d96}
+img[alt*="logo" i]{font-size:0;color:transparent}
+.card-image-box{background:linear-gradient(135deg,#2a2330,#1c1d24);font-size:44px;display:flex;align-items:center;justify-content:center}
+.card-image-box img{font-size:0;color:transparent}
+/* app cards: clean stacked layout */
+.template-card .card-info>p{display:none!important}
+.template-card .card-title-row{flex-wrap:wrap;gap:2px 6px}
+.template-card .card-rating{order:-1;width:100%}
+.template-card .card-info h3{min-height:0!important;-webkit-line-clamp:2}
+.template-card .card-footer{flex-direction:column!important;align-items:stretch!important;gap:10px!important}
+.template-card .price-col{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.template-card .card-footer .price{font-size:17px!important;flex-wrap:wrap}
+.template-card .off-text{display:inline-block;margin:0;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.02em;color:#ffb347;background:rgba(255,179,71,.14)}
+.template-card .view-btn{width:100%;text-align:center;padding:10px 16px!important}
+</style>
+<style id="ditemps-card-tap">
+.template-card .view-btn,.dl-featured-card .view-btn{display:none!important}
+.template-card,.dl-featured-card{cursor:pointer}
+.template-card .off-text{padding:0!important;background:none!important;border-radius:0;font-size:11px;font-weight:700;color:#ff9f43}
+.template-card .off-text::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff9f43;margin-right:6px;vertical-align:1px}
+.template-card .card-footer{gap:6px!important}
+.template-card .card-footer::after,.dl-featured-card .card-footer::after{content:"Tap to view \2192";font-size:11px;font-weight:600;letter-spacing:.02em;color:#9a9ca4;opacity:.9}
+</style>
+<style id="ditemps-tap-hint">
+.template-card{position:relative}
+.template-card .card-footer::after,.dl-featured-card .card-footer::after{content:none!important}
+.template-card .off-text{position:absolute;top:12px;left:12px;z-index:3;display:inline-flex;align-items:center;white-space:nowrap;padding:5px 11px!important;border-radius:999px!important;background:#ff9f43!important;color:#1d1205!important;font-size:10.5px!important;font-weight:800!important;letter-spacing:.03em;box-shadow:0 4px 12px rgba(255,159,67,.35)}
+.template-card .off-text::before{content:none!important}
+.dt-tap-hint{position:absolute;left:50%;top:50%;z-index:4;transform:translate(-50%,-50%);pointer-events:none;padding:9px 18px;border-radius:999px;background:rgba(255,255,255,.95);color:#1a1a1f;font-size:13px;font-weight:800;letter-spacing:.02em;white-space:nowrap;opacity:0;animation:dtTapGlow 1.5s ease-in-out 3}
+@keyframes dtTapGlow{0%,100%{opacity:0;transform:translate(-50%,-50%) scale(.94);box-shadow:0 0 0 rgba(255,92,135,0)}50%{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 26px 6px rgba(255,92,135,.55)}}
+@media(prefers-reduced-motion:reduce){.dt-tap-hint{animation:none;opacity:1}}
+</style>
+<script>
+/* "Tap to view" hint: glows on top of one template, only the FIRST time the user scrolls, then never again. */
+(function(){
+ var KEY='ditemps_tapHintSeen',done=false;
+ try{if(localStorage.getItem(KEY))return}catch(e){}
+ function show(){
+  if(done)return;
+  var best=null,bd=1e9,mid=innerHeight/2;
+  document.querySelectorAll('.template-card').forEach(function(c){
+   if(!c.offsetParent)return;var r=c.getBoundingClientRect();
+   if(r.top<60||r.bottom>innerHeight-20)return;
+   var d=Math.abs((r.top+r.bottom)/2-mid);if(d<bd){bd=d;best=c}
+  });
+  var box=best&&best.querySelector('.card-image-box');
+  if(!box)return;
+  done=true;removeEventListener('scroll',onScroll);
+  try{localStorage.setItem(KEY,'1')}catch(e){}
+  if(getComputedStyle(box).position==='static')box.style.position='relative';
+  var h=document.createElement('div');h.className='dt-tap-hint';h.textContent='Tap to view';box.appendChild(h);
+  setTimeout(function(){h.remove()},4800);
+ }
+ var t,started=false,y0=scrollY;
+ function onScroll(){if(!started&&Math.abs(scrollY-y0)<80)return;started=true;clearTimeout(t);t=setTimeout(show,350)}
+ addEventListener('scroll',onScroll,{passive:true});
+})();
+</script>
+<style id="ditemps-landing-v2">
+.dl-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;background:linear-gradient(90deg,#ff5c87,#ffb86b,#c58bff)}
+.dl-sticky{position:fixed;left:50%;bottom:18px;z-index:40;transform:translate(-50%,90px);opacity:0;border:0;border-radius:999px;padding:13px 24px;font:700 14px "Plus Jakarta Sans",sans-serif;color:#fff;background:linear-gradient(135deg,#ff5c87,#c8385a);box-shadow:0 12px 30px rgba(200,56,90,.45);cursor:pointer;transition:transform .4s cubic-bezier(.22,.8,.24,1),opacity .3s;white-space:nowrap;pointer-events:none}
+.dl-sticky.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.dl-rot{display:inline-block;color:#ff7a9c;transition:opacity .3s,transform .3s}.dl-rot.out{opacity:0;transform:translateY(8px)}
+.dl-occ{text-align:center;margin:0 auto 56px}.dl-occ-title{font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:800;opacity:.55;margin-bottom:16px}
+.dl-occ-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.dl-occ-row button{padding:11px 18px;border-radius:999px;border:1px solid rgba(128,128,140,.35);background:transparent;color:inherit;font:600 14px "Plus Jakarta Sans",sans-serif;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
+.dl-occ-row button:hover{transform:translateY(-3px);border-color:#ff5c87;background:rgba(255,92,135,.12)}
+.dl-art-live{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;position:relative;overflow:hidden;padding:30px;border:1px solid rgba(255,92,135,.3);background:radial-gradient(circle at 50% 0,rgba(255,92,135,.22),transparent 70%),#191b20;color:#f5f5f7;transition:transform .2s}
+.dl-art-live:active{transform:scale(.97)}
+.dl-gift-ico{animation:dlBob 2.2s ease-in-out infinite}.dl-gift-ico .ic{width:56px;height:56px}
+@keyframes dlBob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.dl-gift-t{font:500 clamp(22px,5vw,30px)/1.2 Fraunces,Georgia,serif}.dl-gift-b{font-size:13px;opacity:.65}
+.dl-conf{position:absolute;left:50%;top:45%;width:8px;height:12px;border-radius:2px;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.dl-gift-ico{animation:none}.dl-sticky{transition:none}}
+</style>
+<script>
+(function(){try{
+ var W=['birthdays','anniversaries','proposals','best friends','festivals'],i=0,r=document.getElementById('dlRot');
+ if(r)setInterval(function(){r.classList.add('out');setTimeout(function(){i=(i+1)%W.length;r.textContent=W[i];r.classList.remove('out')},300)},2400);
+ var bar=document.getElementById('dlProg'),st=document.getElementById('dlSticky'),fin=document.querySelector('.dl-final'),hero=document.querySelector('.dl-hero');
+ function sc(){var h=document.documentElement,m=h.scrollHeight-innerHeight;if(bar)bar.style.width=(m>0?scrollY/m*100:0)+'%';
+  if(st&&hero&&fin){var past=scrollY>hero.offsetHeight*.8,nearEnd=fin.getBoundingClientRect().top<innerHeight*.9;st.classList.toggle('on',past&&!nearEnd)}}
+ addEventListener('scroll',sc,{passive:true});sc();
+ var g=document.getElementById('dlGift');
+ if(g){var open=false;
+  function pop(){var cs=['#ff5c87','#ffb86b','#c58bff','#6ee7b7','#7dd3fc'];for(var k=0;k<26;k++){var c=document.createElement('i');c.className='dl-conf';c.style.background=cs[k%5];g.appendChild(c);
+   var a=Math.random()*6.28,d=60+Math.random()*110;c.animate([{transform:'translate(-50%,-50%) rotate(0)',opacity:1},{transform:'translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d+60)+'px) rotate('+(Math.random()*720)+'deg)',opacity:0}],{duration:1100+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=(function(e){return function(){e.remove()}})(c)}}
+  function tog(){open=!open;var t=document.getElementById('dlGiftT'),b=document.getElementById('dlGiftB');
+   t.textContent=open?'Happy Birthday, Riya ❤':'A surprise is waiting for you';b.textContent=open?'You make every day brighter  ·  tap to close':'Tap to open';
+   if(open&&!matchMedia('(prefers-reduced-motion: reduce)').matches)pop()}
+  g.addEventListener('click',tog);g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog()}})}
+}catch(e){}})();
+</script>
+<style id="ditemps-guides">.dl-guides{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.dl-guide{display:flex;flex-direction:column;gap:6px;padding:20px;border-radius:20px;border:1px solid rgba(128,128,140,.3);text-decoration:none;color:inherit;transition:transform .25s,border-color .25s}.dl-guide b{font:600 18px/1.3 Fraunces,Georgia,serif}.dl-guide span{font-size:14px;opacity:.7;line-height:1.5}.dl-guide i{font-style:normal;font-size:13px;font-weight:700;color:#ff7a9c;margin-top:4px}@media(hover:hover){.dl-guide:hover{transform:translateY(-4px);border-color:#ff5c87}}@media(max-width:760px){.dl-guides{grid-template-columns:1fr}}html.ditemps-dark .dl-guide{background:#191b20;border-color:#2c2e35}</style>
 </body>
 </html>

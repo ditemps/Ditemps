@@ -4423,7 +4423,7 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
 
       <section class="dl-final"><h2>Someone you love is one link away.</h2><p>Make it personal. Make it today.</p><button class="dl-cta" onclick="enterDitempsApp()">Create a surprise — free ✨</button></section>
     </main>
-    <footer class="dl-footer"><div class="dl-wrap dl-footer-inner"><span>© 2026 Ditemps. All rights reserved.</span><span><a href="/about.html">About</a><a href="/guides.html">Guides</a><a href="/terms.html">Terms of Service</a><a href="/privacy.html">Privacy Policy</a><a href="/contact.html">Contact Us</a><a href="javascript:void(0)" onclick="showDitempsDmca();return false;">DMCA Policy</a></span></div></footer>
+    <footer class="dl-footer"><div class="dl-wrap dl-footer-inner"><span>© 2026 Ditemps. All rights reserved.</span><span><a href="/about.html">About</a><a href="/guides.html">Guides</a><a href="/terms.html">Terms of Service</a><a href="/privacy.html">Privacy Policy</a><a href="/contact.html">Contact Us</a><a href="/dmca.html">DMCA Policy</a></span></div></footer>
   </div>
 
   <!-- Moved outside #ditempsLandingPage (unlike the source markup) so this
@@ -5321,11 +5321,11 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
         <div class="ditemps-settings-section">
           <div class="ditemps-settings-title">SUPPORT</div>
           <div class="ditemps-settings-card">
-            <button class="ditemps-action-row" onclick="contactDitempsSupport()"><span>Contact support</span><span>›</span></button>
-            <button class="ditemps-action-row" onclick="showDitempsPrivacy()"><span>Privacy policy</span><span>›</span></button>
-            <button class="ditemps-action-row" onclick="showDitempsTerms()"><span>Terms of Service</span><span>›</span></button>
-            <button class="ditemps-action-row" onclick="showDitempsDmca()"><span>DMCA Policy</span><span>›</span></button>
-            <button class="ditemps-action-row" onclick="showDitempsAbout()"><span>About Us</span><span>›</span></button>
+            <button class="ditemps-action-row" onclick="window.open('/contact.html','_blank','noopener')"><span>Contact support</span><span>›</span></button>
+            <button class="ditemps-action-row" onclick="window.open('/privacy.html','_blank','noopener')"><span>Privacy policy</span><span>›</span></button>
+            <button class="ditemps-action-row" onclick="window.open('/terms.html','_blank','noopener')"><span>Terms of Service</span><span>›</span></button>
+            <button class="ditemps-action-row" onclick="window.open('/dmca.html','_blank','noopener')"><span>DMCA Policy</span><span>›</span></button>
+            <button class="ditemps-action-row" onclick="window.open('/about.html','_blank','noopener')"><span>About Us</span><span>›</span></button>
           </div>
         </div>
 
@@ -12286,5 +12286,12 @@ img[alt*="logo" i]{font-size:0;color:transparent}
 }catch(e){}})();
 </script>
 <style id="ditemps-guides">.dl-guides{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.dl-guide{display:flex;flex-direction:column;gap:6px;padding:20px;border-radius:20px;border:1px solid rgba(128,128,140,.3);text-decoration:none;color:inherit;transition:transform .25s,border-color .25s}.dl-guide b{font:600 18px/1.3 Fraunces,Georgia,serif}.dl-guide span{font-size:14px;opacity:.7;line-height:1.5}.dl-guide i{font-style:normal;font-size:13px;font-weight:700;color:#ff7a9c;margin-top:4px}@media(hover:hover){.dl-guide:hover{transform:translateY(-4px);border-color:#ff5c87}}@media(max-width:760px){.dl-guides{grid-template-columns:1fr}}html.ditemps-dark .dl-guide{background:#191b20;border-color:#2c2e35}</style>
+<style id="ditemps-dark-text-fix">
+html.ditemps-dark #settingsModal .acct-name-row h4,
+html.ditemps-dark #settingsModal .acct-stat b,
+html.ditemps-dark #settingsModal .acct-profile-card h4,
+html.ditemps-dark #settingsModal .settings-profile-name{color:#f3f3f5!important}
+html.ditemps-dark #settingsModal .acct-stat span,html.ditemps-dark #settingsModal .acct-meta #acctSince{color:#a9abb2!important}
+</style>
 </body>
 </html>

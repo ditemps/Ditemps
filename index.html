@@ -12548,6 +12548,37 @@ html.ditemps-dark .card-image-box{background:linear-gradient(100deg,#22242a 30%,
 })();
 </script>
 
+<style id="dt-soft-shadows">
+/* Soft, layered shadows everywhere (light) + deeper, subtle ones (dark) */
+:root{--dt-sh-1:0 1px 2px rgba(20,16,30,.04),0 4px 12px rgba(20,16,30,.06);--dt-sh-2:0 1px 2px rgba(20,16,30,.05),0 10px 28px rgba(20,16,30,.09);--dt-sh-3:0 2px 4px rgba(20,16,30,.06),0 18px 40px rgba(20,16,30,.14)}
+html.ditemps-dark{--dt-sh-1:0 1px 2px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.28);--dt-sh-2:0 1px 2px rgba(0,0,0,.32),0 10px 28px rgba(0,0,0,.36);--dt-sh-3:0 2px 4px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.5)}
+/* content-visibility clips outer shadows, so let cards paint fully */
+.templates-grid>.template-card{content-visibility:visible!important;contain:none!important}
+.template-card{box-shadow:var(--dt-sh-2)!important}
+.template-card:hover{box-shadow:var(--dt-sh-3)!important}
+.ditemps-top-header,.dl-nav{box-shadow:var(--dt-sh-2)!important}
+.ditemps-browse-panel{box-shadow:var(--dt-sh-2)}
+.ditemps-section-chip,.ditemps-filter-btn,.ditemps-rect-search,.ditemps-wallet-chip,.ditemps-nav-profile,.dt-bell-btn,.dl-signin{box-shadow:var(--dt-sh-1)}
+.dl-template,.dl-strip-item,.dl-featured-card{box-shadow:var(--dt-sh-2)}
+.dl-guide,.dl-step,.dl-feature{box-shadow:var(--dt-sh-2)!important}
+.dl-guide:hover,.dl-step:hover{box-shadow:var(--dt-sh-3)!important}
+.detail-metric,.detail-discovery-section,.detail-hero{box-shadow:var(--dt-sh-1)}
+.dt-sheet{box-shadow:var(--dt-sh-3)}
+#dtHub .dt-card{box-shadow:var(--dt-sh-1)}
+.modal-content,.auth-sheet,.settings-card{box-shadow:var(--dt-sh-3)}
+</style>
+<style id="dt-card-polish">
+/* Solid cards + soft shadows (light & dark) so the dot-grid never shows through */
+html:not(.ditemps-dark) .dl-guide,
+html:not(.ditemps-dark) .dl-step,
+html:not(.ditemps-dark) .dl-feature{background:#fff;border:1px solid #ebe8ee;box-shadow:0 1px 2px rgba(20,16,30,.04),0 8px 24px rgba(20,16,30,.07)}
+html:not(.ditemps-dark) .dl-guide:hover,
+html:not(.ditemps-dark) .dl-step:hover{box-shadow:0 2px 4px rgba(20,16,30,.05),0 14px 32px rgba(20,16,30,.11)}
+html.ditemps-dark .dl-guide,
+html.ditemps-dark .dl-step,
+html.ditemps-dark .dl-feature{box-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px rgba(0,0,0,.28)}
+.dl-guide,.dl-step,.dl-feature{transition:transform .25s,border-color .25s,box-shadow .25s}
+</style>
 <style id="dt-wallet-chip-style">
 /* Smaller, squarer wallet chip (landing + main header) */
 .ditemps-wallet-chip{height:38px!important;min-width:46px!important;padding:0 11px!important;border-radius:11px!important;corner-shape:squircle;font-size:15px!important;font-weight:800;width:auto!important;box-sizing:border-box}

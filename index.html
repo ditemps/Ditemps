@@ -4495,7 +4495,7 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
 
     <div class="ditemps-header-actions">
       <button class="dt-bell-btn" id="dtBellBtn" type="button" aria-label="Notifications, reports and chat" onclick="dtHubOpen()">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <svg class="dt-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <span class="dt-bell-badge" id="dtBellBadge" style="display:none">0</span>
       </button>
       <button class="login-btn" id="navLoginBtn" onclick="openLogin()">Login</button>
@@ -12548,6 +12548,9 @@ html.ditemps-dark .card-image-box{background:linear-gradient(100deg,#22242a 30%,
 /* ===== Notification hub (bell + 4 tabs) ===== */
 .dt-bell-btn{position:relative;width:48px;height:48px;border-radius:50%;border:1px solid #e1e1e4;background:#fff;color:#252525;display:grid;place-items:center;cursor:pointer;padding:0;flex:0 0 auto;transition:.2s}
 .dt-bell-btn:active{transform:scale(.94)}
+.dt-ico{display:block!important;flex:none;fill:none!important;stroke:currentColor!important;overflow:visible}
+.dt-bell-btn .dt-ico{width:22px!important;height:22px!important}
+.dt-tab .dt-ico{width:20px!important;height:20px!important}
 .dt-bell-badge{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#e8365d;color:#fff;font:800 11px/19px system-ui,sans-serif;text-align:center;box-sizing:border-box;border:2px solid #fff}
 html.ditemps-dark .dt-bell-btn{background:#191b20;border-color:#35373e;color:#f3f3f5}
 html.ditemps-dark .dt-bell-badge{border-color:#191b20}
@@ -12565,7 +12568,7 @@ html.ditemps-dark #dtHub{--bg:#15161a;--card:#202228;--bd:#2d2f36;--tx:#f1f1f4;-
 .dt-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-size:18px;cursor:pointer}
 .dt-tabs{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--bd)}
 .dt-tab{flex:1;border:0;background:var(--card);color:var(--mu);border-radius:12px;padding:8px 2px;font:700 11.5px system-ui,sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
-.dt-tab span{font-size:18px;line-height:1}
+.dt-tab span{display:flex;line-height:1}
 .dt-tab.on{background:var(--ac);color:#fff}
 .dt-tab i{position:absolute;top:4px;right:10px;width:8px;height:8px;border-radius:50%;background:#e8365d;display:none}
 .dt-pane{display:none;flex:1;min-height:0;flex-direction:column}
@@ -12611,10 +12614,10 @@ html.ditemps-dark #dtHub{--bg:#15161a;--card:#202228;--bd:#2d2f36;--tx:#f1f1f4;-
   <div class="dt-sheet">
     <div class="dt-top"><h3>Ditemps Hub</h3><button class="dt-x" type="button" onclick="dtHubClose()" aria-label="Close">✕</button></div>
     <div class="dt-tabs">
-      <button class="dt-tab on" data-t="notif" type="button"><span>🔔</span>Updates<i id="dtDotN"></i></button>
-      <button class="dt-tab" data-t="report" type="button"><span>🚩</span>Report</button>
-      <button class="dt-tab" data-t="suggest" type="button"><span>💡</span>Suggest</button>
-      <button class="dt-tab" data-t="chat" type="button"><span>💬</span>Chat</button>
+      <button class="dt-tab on" data-t="notif" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>Updates<i id="dtDotN"></i></button>
+      <button class="dt-tab" data-t="report" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4"/><path d="M4 4h13l-2.5 4.5L17 13H4"/></svg></span>Report</button>
+      <button class="dt-tab" data-t="suggest" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.4 1 2.3h6c0-.9.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg></span>Suggest</button>
+      <button class="dt-tab" data-t="chat" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg></span>Chat</button>
     </div>
 
     <div class="dt-pane on" id="dtP-notif">

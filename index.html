@@ -4331,10 +4331,14 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
     <nav class="dl-nav">
       <div class="dl-brand"><span class="dl-brand-mark"><img src="https://files.catbox.moe/kkta4i.png" alt="Ditemps logo"></span>Ditemps</div>
       <div class="dl-nav-actions">
+        <button class="dt-bell-btn" id="dtBellBtnLanding" type="button" aria-label="Messages and updates" onclick="dtHubOpen()">
+        <svg class="dt-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg>
+        <span class="dt-bell-badge" id="dtBellBadgeLanding" style="display:none">0</span>
+      </button>
+        <div id="landingWalletChip" class="ditemps-wallet-chip" style="display:none; cursor:pointer;" aria-label="Website wallet balance" onclick="openWalletModal()">₹<span id="landingWalletBalance">0</span></div>
         <button id="landingUserChip" class="ditemps-nav-profile" type="button" onclick="openSettings()" aria-label="Open profile" style="display:none;">
           <img id="landingUserPhoto" src="" alt="Profile">
         </button>
-        <div id="landingWalletChip" class="ditemps-wallet-chip" style="display:none; cursor:pointer;" aria-label="Website wallet balance" onclick="openWalletModal()">₹<span id="landingWalletBalance">0</span></div>
         <button class="dl-signin" id="landingSigninBtn" onclick="if(typeof openLogin==='function') openLogin();">Sign in</button>
       </div>
     </nav>
@@ -12544,6 +12548,11 @@ html.ditemps-dark .card-image-box{background:linear-gradient(100deg,#22242a 30%,
 })();
 </script>
 
+<style id="dt-wallet-chip-style">
+/* Smaller, squarer wallet chip (landing + main header) */
+.ditemps-wallet-chip{height:38px!important;min-width:46px!important;padding:0 11px!important;border-radius:11px!important;corner-shape:squircle;font-size:15px!important;font-weight:800;width:auto!important;box-sizing:border-box}
+@media(max-width:600px){.ditemps-wallet-chip{height:36px!important;min-width:44px!important;padding:0 10px!important;border-radius:10px!important;font-size:14px!important}}
+</style>
 <style id="dt-hub-styles">
 /* ===== Notification hub (bell + 4 tabs) ===== */
 .dt-bell-btn{position:relative;width:48px;height:48px;border-radius:50%;border:1px solid #e1e1e4;background:#fff;color:#252525;display:grid;place-items:center;cursor:pointer;padding:0;flex:0 0 auto;transition:.2s}
@@ -12691,8 +12700,8 @@ try { const v = localStorage.getItem('ditemps_chat_seen'); if(v===null){ chatSee
 function chatUnread(){ const me = auth.currentUser && auth.currentUser.uid; return msgs.filter(m => m.uid !== me && ms(m) > chatSeen).length; }
 const fmt = n => n > 99 ? '99+' : String(n);
 function updateBadge(){
-  const n = unreadCount(), c = chatUnread(), t = n + c, b = $('dtBellBadge');
-  b.style.display = t ? '' : 'none'; b.textContent = fmt(t);
+  const n = unreadCount(), c = chatUnread(), t = n + c;
+  document.querySelectorAll('.dt-bell-badge').forEach(b => { b.style.display = t ? '' : 'none'; b.textContent = fmt(t); });
   const dn = $('dtDotN'), dc = $('dtDotC');
   dn.style.display = n ? 'block' : 'none'; dn.textContent = fmt(n);
   dc.style.display = c ? 'block' : 'none'; dc.textContent = fmt(c);

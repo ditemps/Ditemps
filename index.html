@@ -4494,6 +4494,10 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
     </a>
 
     <div class="ditemps-header-actions">
+      <button class="dt-bell-btn" id="dtBellBtn" type="button" aria-label="Notifications, reports and chat" onclick="dtHubOpen()">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dt-bell-badge" id="dtBellBadge" style="display:none">0</span>
+      </button>
       <button class="login-btn" id="navLoginBtn" onclick="openLogin()">Login</button>
     </div>
 
@@ -12539,5 +12543,271 @@ html.ditemps-dark .card-image-box{background:linear-gradient(100deg,#22242a 30%,
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
+
+<style id="dt-hub-styles">
+/* ===== Notification hub (bell + 4 tabs) ===== */
+.dt-bell-btn{position:relative;width:48px;height:48px;border-radius:50%;border:1px solid #e1e1e4;background:#fff;color:#252525;display:grid;place-items:center;cursor:pointer;padding:0;flex:0 0 auto;transition:.2s}
+.dt-bell-btn:active{transform:scale(.94)}
+.dt-bell-badge{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#e8365d;color:#fff;font:800 11px/19px system-ui,sans-serif;text-align:center;box-sizing:border-box;border:2px solid #fff}
+html.ditemps-dark .dt-bell-btn{background:#191b20;border-color:#35373e;color:#f3f3f5}
+html.ditemps-dark .dt-bell-badge{border-color:#191b20}
+@media(max-width:600px){.dt-bell-btn{width:42px;height:42px}}
+@media(max-width:420px){.ditemps-top-header .ditemps-brand-name{font-size:20px!important}.ditemps-top-header{gap:8px!important}.ditemps-header-actions{gap:6px!important}}
+
+#dtHub{--bg:#fff;--card:#f6f6f8;--bd:#e6e6ea;--tx:#1b1b1f;--mu:#777a84;--ac:#c21863;position:fixed;inset:0;z-index:2147483000;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);font-family:Inter,system-ui,-apple-system,sans-serif}
+html.ditemps-dark #dtHub{--bg:#15161a;--card:#202228;--bd:#2d2f36;--tx:#f1f1f4;--mu:#9a9ca6;--ac:#ff5c93}
+#dtHub.open{display:flex}
+.dt-sheet{width:100%;max-width:560px;height:88vh;height:88dvh;background:var(--bg);color:var(--tx);border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.35);animation:dtUp .25s ease}
+@keyframes dtUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:700px){#dtHub{align-items:center}.dt-sheet{border-radius:22px;height:80vh}}
+.dt-top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 6px}
+.dt-top h3{margin:0;font:600 22px Georgia,serif}
+.dt-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:var(--card);color:var(--tx);font-size:18px;cursor:pointer}
+.dt-tabs{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--bd)}
+.dt-tab{flex:1;border:0;background:var(--card);color:var(--mu);border-radius:12px;padding:8px 2px;font:700 11.5px system-ui,sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.dt-tab span{font-size:18px;line-height:1}
+.dt-tab.on{background:var(--ac);color:#fff}
+.dt-tab i{position:absolute;top:4px;right:10px;width:8px;height:8px;border-radius:50%;background:#e8365d;display:none}
+.dt-pane{display:none;flex:1;min-height:0;flex-direction:column}
+.dt-pane.on{display:flex}
+.dt-scroll{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.dt-empty{text-align:center;color:var(--mu);padding:36px 12px;font-size:14px;line-height:1.5}
+.dt-card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 13px;margin-bottom:10px}
+.dt-card.new{border-color:var(--ac)}
+.dt-card h4{margin:0 0 4px;font-size:15px}
+.dt-card p{margin:0;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.dt-meta{font-size:11.5px;color:var(--mu);margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dt-link{display:inline-block;margin-top:8px;color:var(--ac);font-weight:700;font-size:13px;text-decoration:none}
+.dt-form{padding:12px 14px;display:flex;flex-direction:column;gap:9px;border-bottom:1px solid var(--bd)}
+.dt-in,.dt-sel,.dt-ta{width:100%;box-sizing:border-box;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:11px 12px;font:14px system-ui,sans-serif;outline:none}
+.dt-ta{min-height:92px;resize:vertical}
+.dt-in:focus,.dt-sel:focus,.dt-ta:focus{border-color:var(--ac)}
+.dt-btn{border:0;background:var(--ac);color:#fff;border-radius:12px;padding:11px 16px;font:800 14px system-ui,sans-serif;cursor:pointer}
+.dt-btn:disabled{opacity:.5}
+.dt-small{border:0;background:none;color:var(--mu);font-size:12px;cursor:pointer;padding:0}
+.dt-small:hover{color:#e8365d}
+.dt-tag{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:8px;background:rgba(194,24,99,.12);color:var(--ac)}
+.dt-msg{display:flex;gap:10px;margin-bottom:14px}
+.dt-av{width:36px;height:36px;border-radius:50%;flex:0 0 36px;object-fit:cover;background:linear-gradient(135deg,#ff7aa8,#c21863);color:#fff;display:grid;place-items:center;font-weight:800;overflow:hidden}
+.dt-av img{width:100%;height:100%;object-fit:cover}
+.dt-mb{flex:1;min-width:0}
+.dt-mh{font-size:13px;display:flex;gap:7px;align-items:baseline}
+.dt-mh b{font-size:13.5px}
+.dt-mh em{font-style:normal;color:var(--mu);font-size:11.5px}
+.dt-mt{font-size:14.5px;line-height:1.45;margin-top:2px;white-space:pre-wrap;word-break:break-word}
+.dt-ma{display:flex;gap:14px;margin-top:5px;align-items:center}
+.dt-like{border:0;background:none;color:var(--mu);font-size:13px;cursor:pointer;padding:0;display:flex;gap:4px;align-items:center}
+.dt-like.on{color:#e8365d}
+.dt-send{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--bd);background:var(--bg)}
+.dt-send .dt-in{border-radius:22px}
+.dt-send .dt-btn{border-radius:22px;padding:0 18px}
+.dt-login{padding:14px;text-align:center;border-top:1px solid var(--bd);font-size:14px;color:var(--mu)}
+.dt-login button{margin-left:6px}
+.dt-toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#222;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s}
+.dt-toast.on{opacity:1}
+</style>
+
+<div id="dtHub" role="dialog" aria-modal="true" aria-label="Ditemps hub" onclick="if(event.target===this)dtHubClose()">
+  <div class="dt-sheet">
+    <div class="dt-top"><h3>Ditemps Hub</h3><button class="dt-x" type="button" onclick="dtHubClose()" aria-label="Close">✕</button></div>
+    <div class="dt-tabs">
+      <button class="dt-tab on" data-t="notif" type="button"><span>🔔</span>Updates<i id="dtDotN"></i></button>
+      <button class="dt-tab" data-t="report" type="button"><span>🚩</span>Report</button>
+      <button class="dt-tab" data-t="suggest" type="button"><span>💡</span>Suggest</button>
+      <button class="dt-tab" data-t="chat" type="button"><span>💬</span>Chat</button>
+    </div>
+
+    <div class="dt-pane on" id="dtP-notif">
+      <div id="dtAdminNotif" class="dt-form" style="display:none">
+        <input class="dt-in" id="dtNTitle" maxlength="80" placeholder="Title (e.g. New template added 🎉)">
+        <textarea class="dt-ta" id="dtNBody" maxlength="500" placeholder="Message" style="min-height:64px"></textarea>
+        <input class="dt-in" id="dtNLink" placeholder="Link (optional, https://...)">
+        <button class="dt-btn" type="button" id="dtNPost">Post notification (admin)</button>
+      </div>
+      <div class="dt-scroll" id="dtNList"><div class="dt-empty">Loading…</div></div>
+    </div>
+
+    <div class="dt-pane" id="dtP-report">
+      <div class="dt-form">
+        <select class="dt-sel" id="dtRCat"><option>Bug / kuch kaam nahi kar raha</option><option>Payment / wallet issue</option><option>Template problem</option><option>Kisi user ki shikayat</option><option>Other</option></select>
+        <textarea class="dt-ta" id="dtRText" maxlength="1000" placeholder="Problem kya hai? Jitna detail mein likho utna acha."></textarea>
+        <button class="dt-btn" type="button" id="dtRSend">Send report</button>
+      </div>
+      <div class="dt-scroll" id="dtRList"></div>
+    </div>
+
+    <div class="dt-pane" id="dtP-suggest">
+      <div class="dt-form">
+        <select class="dt-sel" id="dtSCat"><option>Naya template chahiye</option><option>Website design / feature</option><option>Price / offer</option><option>Other</option></select>
+        <textarea class="dt-ta" id="dtSText" maxlength="1000" placeholder="Aapka sujhav kya hai?"></textarea>
+        <button class="dt-btn" type="button" id="dtSSend">Send suggestion</button>
+      </div>
+      <div class="dt-scroll" id="dtSList"></div>
+    </div>
+
+    <div class="dt-pane" id="dtP-chat">
+      <div class="dt-scroll" id="dtCList"><div class="dt-empty">Loading…</div></div>
+      <div id="dtCBar"></div>
+    </div>
+    <div class="dt-toast" id="dtToast"></div>
+  </div>
+</div>
+
+<script type="module" id="dt-hub-js">
+import { getApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, where, limit, addDoc, deleteDoc, updateDoc, doc, onSnapshot, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const app = getApp(), auth = getAuth(app), db = getFirestore(app);
+const $ = id => document.getElementById(id);
+const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ms = d => (d && d.createdAt && d.createdAt.toMillis) ? d.createdAt.toMillis() : Date.now();
+function ago(t){const s=Math.max(1,(Date.now()-t)/1000|0);if(s<60)return 'abhi';if(s<3600)return (s/60|0)+' min';if(s<86400)return (s/3600|0)+' hr';if(s<604800)return (s/86400|0)+' din';return new Date(t).toLocaleDateString()}
+function toast(m){const e=$('dtToast');e.textContent=m;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)}
+const isAdmin = () => !!window.isAdminUser;
+let user = null, curTab = 'notif', notifs = [], seen = 0;
+try { seen = Number(localStorage.getItem('ditemps_notif_seen') || 0); } catch(e){}
+
+window.dtHubOpen = function(){ $('dtHub').classList.add('open'); document.body.style.overflow='hidden'; setTab(curTab); };
+window.dtHubClose = function(){ $('dtHub').classList.remove('open'); document.body.style.overflow=''; };
+document.addEventListener('keydown', e => { if(e.key==='Escape') window.dtHubClose(); });
+
+function setTab(t){
+  curTab = t;
+  document.querySelectorAll('#dtHub .dt-tab').forEach(b => b.classList.toggle('on', b.dataset.t===t));
+  document.querySelectorAll('#dtHub .dt-pane').forEach(p => p.classList.toggle('on', p.id==='dtP-'+t));
+  if(t==='notif') markSeen();
+  if(t==='chat') setTimeout(()=>{const l=$('dtCList'); l.scrollTop=0;},50);
+  renderAll();
+}
+document.querySelectorAll('#dtHub .dt-tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.t)));
+
+function unreadCount(){ return notifs.filter(n => ms(n) > seen).length; }
+function updateBadge(){
+  const n = unreadCount(), b = $('dtBellBadge');
+  b.style.display = n ? '' : 'none'; b.textContent = n > 9 ? '9+' : n;
+  $('dtDotN').style.display = n ? 'block' : 'none';
+}
+function markSeen(){
+  if(!notifs.length) return;
+  seen = Math.max(...notifs.map(ms));
+  try { localStorage.setItem('ditemps_notif_seen', String(seen)); } catch(e){}
+  setTimeout(updateBadge, 1200);
+}
+
+/* ---------- Updates ---------- */
+function renderNotifs(){
+  const box = $('dtNList');
+  if(!notifs.length){ box.innerHTML = '<div class="dt-empty">🔔<br>Abhi koi notification nahi hai.<br>Naye templates aate hi yahan dikhenge.</div>'; return; }
+  box.innerHTML = notifs.map(n => {
+    const link = /^https?:\/\//i.test(n.link||'') ? `<a class="dt-link" href="${esc(n.link)}" target="_blank" rel="noopener">Dekho →</a>` : '';
+    return `<div class="dt-card ${ms(n)>seen&&curTab!=='notif'?'new':''}"><h4>${esc(n.title)}</h4><p>${esc(n.body)}</p>${link}<div class="dt-meta"><span>${ago(ms(n))}</span>${isAdmin()?`<button class="dt-small" data-del-n="${n.id}">Delete</button>`:''}</div></div>`;
+  }).join('');
+}
+onSnapshot(query(collection(db,'notifications'), orderBy('createdAt','desc'), limit(50)),
+  snap => { notifs = snap.docs.map(d => ({id:d.id, ...d.data()})); updateBadge(); if(curTab==='notif' && $('dtHub').classList.contains('open')) markSeen(); renderNotifs(); },
+  err => { console.error(err); $('dtNList').innerHTML = '<div class="dt-empty">Notifications load nahi hue. Firestore rules check karo.</div>'; });
+
+$('dtNPost').addEventListener('click', async () => {
+  if(!isAdmin()) return;
+  const title = $('dtNTitle').value.trim(), body = $('dtNBody').value.trim(), link = $('dtNLink').value.trim();
+  if(!title) return toast('Title likho');
+  try { await addDoc(collection(db,'notifications'), {title, body, link, createdAt: serverTimestamp()}); $('dtNTitle').value=$('dtNBody').value=$('dtNLink').value=''; toast('Post ho gaya ✅'); }
+  catch(e){ console.error(e); toast('Post nahi hua (rules check karo)'); }
+});
+$('dtNList').addEventListener('click', async e => {
+  const id = e.target.dataset && e.target.dataset.delN;
+  if(id && isAdmin() && confirm('Delete notification?')) try { await deleteDoc(doc(db,'notifications',id)); } catch(er){ toast('Delete fail'); }
+});
+
+/* ---------- Report / Suggest ---------- */
+let feedback = [];
+function mkFeedback(kind, catId, textId, btnId, listId){
+  $(btnId).addEventListener('click', async () => {
+    if(!user){ toast('Pehle login karo'); window.openLogin && window.openLogin(); return; }
+    const text = $(textId).value.trim();
+    if(text.length < 5) return toast('Thoda detail likho');
+    $(btnId).disabled = true;
+    try {
+      await addDoc(collection(db,'feedback'), {type:kind, category:$(catId).value, text, uid:user.uid, name:user.displayName||'User', email:user.email||'', createdAt:serverTimestamp()});
+      $(textId).value=''; toast(kind==='report'?'Report bhej di 🙏':'Sujhav ke liye shukriya 💡');
+    } catch(e){ console.error(e); toast('Send nahi hua, dobara try karo'); }
+    $(btnId).disabled = false;
+  });
+}
+mkFeedback('report','dtRCat','dtRText','dtRSend','dtRList');
+mkFeedback('suggestion','dtSCat','dtSText','dtSSend','dtSList');
+function renderFeedback(){
+  [['report','dtRList'],['suggestion','dtSList']].forEach(([k,id]) => {
+    const rows = feedback.filter(f => f.type===k).sort((a,b)=>ms(b)-ms(a));
+    const box = $(id);
+    if(!user){ box.innerHTML = '<div class="dt-empty">Login karke bhejo.</div>'; return; }
+    if(!rows.length){ box.innerHTML = ''; return; }
+    box.innerHTML = `<div class="dt-meta" style="margin:0 0 8px">${isAdmin()?'Sabhi submissions (admin)':'Aapke bheje hue'}</div>` + rows.map(f =>
+      `<div class="dt-card"><span class="dt-tag">${esc(f.category)}</span><p style="margin-top:6px">${esc(f.text)}</p><div class="dt-meta"><span>${isAdmin()?esc(f.name)+' · '+esc(f.email)+' · ':''}${ago(ms(f))}</span>${isAdmin()?`<button class="dt-small" data-del-f="${f.id}">Delete</button>`:''}</div></div>`).join('');
+  });
+}
+let unsubFb = null;
+function listenFeedback(){
+  if(unsubFb){ unsubFb(); unsubFb=null; }
+  feedback = [];
+  if(!user){ renderFeedback(); return; }
+  const q = isAdmin() ? query(collection(db,'feedback'), orderBy('createdAt','desc'), limit(100)) : query(collection(db,'feedback'), where('uid','==',user.uid));
+  unsubFb = onSnapshot(q, snap => { feedback = snap.docs.map(d => ({id:d.id, ...d.data()})); renderFeedback(); }, err => { console.error(err); });
+}
+$('dtHub').addEventListener('click', async e => {
+  const id = e.target.dataset && e.target.dataset.delF;
+  if(id && isAdmin() && confirm('Delete?')) try { await deleteDoc(doc(db,'feedback',id)); } catch(er){ toast('Delete fail'); }
+});
+
+/* ---------- Chat (public, everyone sees everyone) ---------- */
+let msgs = [], lastSend = 0;
+function avatar(m){
+  return m.photo ? `<div class="dt-av"><img src="${esc(m.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"></div>` : `<div class="dt-av">${esc((m.name||'U').slice(0,1).toUpperCase())}</div>`;
+}
+function renderChat(){
+  const box = $('dtCList');
+  if(!msgs.length){ box.innerHTML = '<div class="dt-empty">💬<br>Abhi koi message nahi.<br>Pehle aap kuch likho!</div>'; return; }
+  box.innerHTML = msgs.map(m => {
+    const likes = m.likedBy || [], liked = user && likes.includes(user.uid);
+    const canDel = user && (m.uid===user.uid || isAdmin());
+    return `<div class="dt-msg">${avatar(m)}<div class="dt-mb"><div class="dt-mh"><b>${esc(m.name||'User')}</b><em>${ago(ms(m))}</em></div><div class="dt-mt">${esc(m.text)}</div><div class="dt-ma"><button class="dt-like ${liked?'on':''}" data-like="${m.id}">${liked?'❤️':'🤍'} ${likes.length||''}</button>${canDel?`<button class="dt-small" data-del-m="${m.id}">Delete</button>`:''}</div></div></div>`;
+  }).join('');
+}
+function renderBar(){
+  const bar = $('dtCBar');
+  if(!user){ bar.innerHTML = '<div class="dt-login">Chat karne ke liye login karo<button class="dt-btn" type="button" id="dtLoginGo">Login</button></div>'; $('dtLoginGo').onclick = () => { window.dtHubClose(); window.openLogin && window.openLogin(); }; return; }
+  if(bar.querySelector('#dtCIn')) return;
+  bar.innerHTML = '<div class="dt-send"><input class="dt-in" id="dtCIn" maxlength="300" placeholder="Kuch bhi likho…" autocomplete="off"><button class="dt-btn" type="button" id="dtCSend">Send</button></div>';
+  const send = async () => {
+    const inp = $('dtCIn'), text = inp.value.trim();
+    if(!text) return;
+    if(Date.now()-lastSend < 3000) return toast('Thoda ruko, 3 sec mein ek message');
+    lastSend = Date.now(); inp.value = '';
+    try { await addDoc(collection(db,'community'), {text, uid:user.uid, name:user.displayName||'User', photo:user.photoURL||'', likedBy:[], createdAt:serverTimestamp()}); }
+    catch(e){ console.error(e); toast('Message nahi gaya'); inp.value = text; }
+  };
+  $('dtCSend').onclick = send;
+  $('dtCIn').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
+}
+onSnapshot(query(collection(db,'community'), orderBy('createdAt','desc'), limit(80)),
+  snap => { msgs = snap.docs.map(d => ({id:d.id, ...d.data()})); renderChat(); },
+  err => { console.error(err); $('dtCList').innerHTML = '<div class="dt-empty">Chat load nahi hui. Firestore rules check karo.</div>'; });
+$('dtCList').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.dataset.like){
+    if(!user){ toast('Like ke liye login karo'); return; }
+    const m = msgs.find(x => x.id===t.dataset.like); if(!m) return;
+    const has = (m.likedBy||[]).includes(user.uid);
+    try { await updateDoc(doc(db,'community',m.id), {likedBy: has ? arrayRemove(user.uid) : arrayUnion(user.uid)}); } catch(er){ console.error(er); }
+  } else if(t.dataset.delM && confirm('Message delete karein?')){
+    try { await deleteDoc(doc(db,'community',t.dataset.delM)); } catch(er){ toast('Delete fail'); }
+  }
+});
+
+function renderAll(){ renderNotifs(); renderFeedback(); renderChat(); renderBar(); $('dtAdminNotif').style.display = isAdmin() ? '' : 'none'; }
+onAuthStateChanged(auth, u => { user = u; setTimeout(() => { listenFeedback(); renderAll(); }, 400); });
+</script>
+
 </body>
 </html>

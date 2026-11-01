@@ -4494,8 +4494,8 @@ html.ditemps-dark .social-btn .social-ico{border-color:#3a3d45}
     </a>
 
     <div class="ditemps-header-actions">
-      <button class="dt-bell-btn" id="dtBellBtn" type="button" aria-label="Notifications, reports and chat" onclick="dtHubOpen()">
-        <svg class="dt-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <button class="dt-bell-btn" id="dtBellBtn" type="button" aria-label="Messages and updates" onclick="dtHubOpen()">
+        <svg class="dt-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg>
         <span class="dt-bell-badge" id="dtBellBadge" style="display:none">0</span>
       </button>
       <button class="login-btn" id="navLoginBtn" onclick="openLogin()">Login</button>
@@ -12570,7 +12570,7 @@ html.ditemps-dark #dtHub{--bg:#15161a;--card:#202228;--bd:#2d2f36;--tx:#f1f1f4;-
 .dt-tab{flex:1;border:0;background:var(--card);color:var(--mu);border-radius:12px;padding:8px 2px;font:700 11.5px system-ui,sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
 .dt-tab span{display:flex;line-height:1}
 .dt-tab.on{background:var(--ac);color:#fff}
-.dt-tab i{position:absolute;top:4px;right:10px;width:8px;height:8px;border-radius:50%;background:#e8365d;display:none}
+.dt-tab i{position:absolute;top:2px;right:6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#e8365d;color:#fff;font:800 10px/16px system-ui,sans-serif;font-style:normal;text-align:center;box-sizing:border-box;display:none}
 .dt-pane{display:none;flex:1;min-height:0;flex-direction:column}
 .dt-pane.on{display:flex}
 .dt-scroll{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
@@ -12617,7 +12617,7 @@ html.ditemps-dark #dtHub{--bg:#15161a;--card:#202228;--bd:#2d2f36;--tx:#f1f1f4;-
       <button class="dt-tab on" data-t="notif" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>Updates<i id="dtDotN"></i></button>
       <button class="dt-tab" data-t="report" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22V4"/><path d="M4 4h13l-2.5 4.5L17 13H4"/></svg></span>Report</button>
       <button class="dt-tab" data-t="suggest" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.7.6 1 1.4 1 2.3h6c0-.9.3-1.7 1-2.3A7 7 0 0 0 12 2z"/></svg></span>Suggest</button>
-      <button class="dt-tab" data-t="chat" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg></span>Chat</button>
+      <button class="dt-tab" data-t="chat" type="button"><span><svg class="dt-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.6-5A8.5 8.5 0 1 1 21 11.5z"/></svg></span>Chat<i id="dtDotC"></i></button>
     </div>
 
     <div class="dt-pane on" id="dtP-notif">
@@ -12671,7 +12671,7 @@ const isAdmin = () => !!window.isAdminUser;
 let user = null, curTab = 'notif', notifs = [], seen = 0;
 try { seen = Number(localStorage.getItem('ditemps_notif_seen') || 0); } catch(e){}
 
-window.dtHubOpen = function(){ $('dtHub').classList.add('open'); document.body.style.overflow='hidden'; setTab(curTab); };
+window.dtHubOpen = function(){ $('dtHub').classList.add('open'); document.body.style.overflow='hidden'; if(chatUnread() && !unreadCount()) curTab='chat'; else if(unreadCount()) curTab='notif'; setTab(curTab); };
 window.dtHubClose = function(){ $('dtHub').classList.remove('open'); document.body.style.overflow=''; };
 document.addEventListener('keydown', e => { if(e.key==='Escape') window.dtHubClose(); });
 
@@ -12680,16 +12680,27 @@ function setTab(t){
   document.querySelectorAll('#dtHub .dt-tab').forEach(b => b.classList.toggle('on', b.dataset.t===t));
   document.querySelectorAll('#dtHub .dt-pane').forEach(p => p.classList.toggle('on', p.id==='dtP-'+t));
   if(t==='notif') markSeen();
-  if(t==='chat') setTimeout(()=>{const l=$('dtCList'); l.scrollTop=0;},50);
+  if(t==='chat'){ markChatSeen(); setTimeout(()=>{const l=$('dtCList'); l.scrollTop=0;},50); }
   renderAll();
 }
 document.querySelectorAll('#dtHub .dt-tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.t)));
 
 function unreadCount(){ return notifs.filter(n => ms(n) > seen).length; }
+let chatSeen = 0;
+try { const v = localStorage.getItem('ditemps_chat_seen'); if(v===null){ chatSeen = Date.now(); localStorage.setItem('ditemps_chat_seen', String(chatSeen)); } else chatSeen = Number(v) || 0; } catch(e){ chatSeen = Date.now(); }
+function chatUnread(){ const me = auth.currentUser && auth.currentUser.uid; return msgs.filter(m => m.uid !== me && ms(m) > chatSeen).length; }
+const fmt = n => n > 99 ? '99+' : String(n);
 function updateBadge(){
-  const n = unreadCount(), b = $('dtBellBadge');
-  b.style.display = n ? '' : 'none'; b.textContent = n > 9 ? '9+' : n;
-  $('dtDotN').style.display = n ? 'block' : 'none';
+  const n = unreadCount(), c = chatUnread(), t = n + c, b = $('dtBellBadge');
+  b.style.display = t ? '' : 'none'; b.textContent = fmt(t);
+  const dn = $('dtDotN'), dc = $('dtDotC');
+  dn.style.display = n ? 'block' : 'none'; dn.textContent = fmt(n);
+  dc.style.display = c ? 'block' : 'none'; dc.textContent = fmt(c);
+}
+function markChatSeen(){
+  if(msgs.length) chatSeen = Math.max(Date.now() - 2000, ...msgs.map(m => (m.createdAt && m.createdAt.toMillis) ? m.createdAt.toMillis() : 0), chatSeen);
+  try { localStorage.setItem('ditemps_chat_seen', String(chatSeen)); } catch(e){}
+  updateBadge();
 }
 function markSeen(){
   if(!notifs.length) return;
@@ -12794,7 +12805,7 @@ function renderBar(){
   $('dtCIn').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
 }
 onSnapshot(query(collection(db,'community'), orderBy('createdAt','desc'), limit(80)),
-  snap => { msgs = snap.docs.map(d => ({id:d.id, ...d.data()})); renderChat(); },
+  snap => { msgs = snap.docs.map(d => ({id:d.id, ...d.data()})); renderChat(); if(curTab==='chat' && $('dtHub').classList.contains('open')) markChatSeen(); else updateBadge(); },
   err => { console.error(err); $('dtCList').innerHTML = '<div class="dt-empty">Chat load nahi hui. Firestore rules check karo.</div>'; });
 $('dtCList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
@@ -12809,7 +12820,7 @@ $('dtCList').addEventListener('click', async e => {
 });
 
 function renderAll(){ renderNotifs(); renderFeedback(); renderChat(); renderBar(); $('dtAdminNotif').style.display = isAdmin() ? '' : 'none'; }
-onAuthStateChanged(auth, u => { user = u; setTimeout(() => { listenFeedback(); renderAll(); }, 400); });
+onAuthStateChanged(auth, u => { user = u; updateBadge(); setTimeout(() => { listenFeedback(); renderAll(); }, 400); });
 </script>
 
 </body>
